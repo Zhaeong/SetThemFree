@@ -40,7 +40,7 @@ INCLUDES = -Iinclude                                                     \
 
 #Need to put the linkers at the end of the call
 $(BINDIR)/$(GAMENAME).html: $(OBJFILES)
-	$(CC) $(CFLAGS) $^ -o $@ $(LINKERS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LINKERS) --shell-file customShell.html
 
 #Note the -c tells the compiler to create obj files
 
