@@ -18,8 +18,8 @@ CC = em++
 #-ggdb compiles with debug symbols
 #-mwindows compiles without terminal
 
-CFLAGS = 
-LINKERS =-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -std=c++11 --preload-file png --profiling 
+CFLAGS = -Wshadow 
+LINKERS =-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' -std=c++11 --preload-file res --profiling 
 
 SRCDIR = src
 OBJDIR = obj

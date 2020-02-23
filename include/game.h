@@ -13,16 +13,16 @@
 
 using namespace std;
 
-//Forward declaration due to obj_texture including this file
-//class Texture;
-
-//Foward declaration due to obj_ship including this file
-//class Ship;
 
 int StartSDL(SDL_Window **window, SDL_Renderer **renderer);
 
 SDL_Texture* GetSDLTexture(SDL_Renderer *renderer, SDL_Window *window, string textureLocation);
 
+Texture InitTexture(SDL_Texture *sdlTexture, int x, int y);
+
+void RenderTexture(SDL_Renderer *renderer, Texture tex);
+
+void RemoveTextureWhiteSpace(SDL_Window *window, SDL_Texture *texture);
 
 #endif // GAME_H
  
