@@ -195,7 +195,7 @@ Module['FS_createPath']('/res', 'png', true, true);
     }
   
    }
-   loadPackage({"files": [{"filename": "/res/png/title.png", "start": 0, "end": 1241, "audio": 0}], "remote_package_size": 1241, "package_uuid": "1795bca8-4db1-460e-ab9c-5c4014ccf067"});
+   loadPackage({"files": [{"filename": "/res/png/title.png", "start": 0, "end": 1241, "audio": 0}], "remote_package_size": 1241, "package_uuid": "a9af5e4d-47a1-4ab0-9d84-cb904de0cc31"});
   
   })();
   
@@ -1421,11 +1421,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 5344656,
+    STACK_BASE = 5344688,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 101776,
-    DYNAMIC_BASE = 5344656,
-    DYNAMICTOP_PTR = 101616;
+    STACK_MAX = 101808,
+    DYNAMIC_BASE = 5344688,
+    DYNAMICTOP_PTR = 101648;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1968,7 +1968,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
 
 
 
-// STATICTOP = STATIC_BASE + 100752;
+// STATICTOP = STATIC_BASE + 100784;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -6565,7 +6565,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 101616;
+      return 101648;
     }
 
   function _emscripten_glActiveTexture(x0) { GLctx['activeTexture'](x0) }

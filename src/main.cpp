@@ -17,6 +17,11 @@ SDL_Rect dstRect;
 
 Texture Title;
 
+int screenR, screenG, screenB;
+
+float xDeca = 300;
+float yDeca = 300;
+
 void gameloop() 
 {
     Uint32 frameStart;
@@ -24,7 +29,7 @@ void gameloop()
     frameStart = SDL_GetTicks();  
 
     //The color at which the screen will be if alpha = 0 on all textures
-    SDL_SetRenderDrawColor(renderer, 17, 17, 17, 255);
+    SDL_SetRenderDrawColor(renderer, screenR, screenG, screenB, 255);
 
     SDL_RenderClear(renderer);
 
@@ -58,6 +63,57 @@ void gameloop()
 
     RenderTexture(renderer, Title);
 
+    //Render circle
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    //Midpoint
+    int centerX = 250;
+    int centerY = 250;
+
+    int radius = 150;
+
+
+
+    //Convert degrees to radians
+    double rad = 36 * PI / (double)180.0;
+
+    float xVal = xDeca;
+    float yVal = yDeca;
+    float xNew;
+    float yNew;
+
+    double cosVal = cos(rad);
+    double sinVal = sin(rad);
+    //Clockwise rotation about center points
+    for(int i = 0; i < 10; i++)
+    { 
+        //Origin point
+        xNew = (cosVal * (xVal - centerX)) - (sinVal * (yVal - centerY)) + centerX;
+        yNew = (sinVal * (xVal - centerX)) + (cosVal * (yVal - centerY)) + centerY;
+
+        SDL_RenderDrawPoint(renderer, centerX, centerY);
+
+        SDL_RenderDrawLine(renderer, xVal, yVal, xNew, yNew);
+        //cout << "ori x: " << xVal << " y: " << yVal << "\n";
+        //cout << "new x: " << xNew << " y: " << yNew << "\n";
+
+        xVal = xNew;
+        yVal = yNew;
+    }
+
+    //Translate xDeca by one degree 
+/*
+    rad = 45 * PI / (double)180.0;
+    cosVal = cos(rad);
+    sinVal = sin(rad);
+
+    xDeca = (cosVal * (xDeca - centerX)) - (sinVal * (xDeca - centerY)) + centerX;
+    yDeca = (sinVal * (xDeca - centerX)) + (cosVal * (yDeca - centerY)) + centerY;
+*/
+    yDeca += 1;
+    //emscripten_cancel_main_loop();
+    //Set screen color back to screen defaults
+    //SDL_SetRenderDrawColor(renderer, screenR, screenG, screenB, 255);
     ////////////////////////////////////////////////////////////////////////
     //End of main game code
     ////////////////////////////////////////////////////////////////////////
@@ -85,10 +141,15 @@ int main(int argv, char **args)
     StartSDL(&window, &renderer);
 
 
+    screenR = 17;
+    screenG = 17; 
+    screenB = 17;
     SDL_Texture *titleTex = GetSDLTexture(renderer, window, "./res/png/title.png");
     RemoveTextureWhiteSpace(window, titleTex);
     Title = InitTexture(titleTex, 20, 20); 
 
+    xDeca = 250;
+    yDeca = 300;
 
 #ifdef EMSCRIPTEN
     emscripten_set_main_loop(gameloop, 0, 0);
