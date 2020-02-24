@@ -137,66 +137,66 @@ SDL_Texture *GetSDLTexture(SDL_Renderer *renderer, SDL_Window *window, string te
 
 void RemoveTextureWhiteSpace(SDL_Window *window, SDL_Texture *texture)
 {
-  void *mPixels;
-  int mPitch;
+    void *mPixels;
+    int mPitch;
 
-  if (texture == NULL)
-  {
-    printf("Input Texture is null in RemoveTextureWhiteSpace! SDL Error: %s\n",
-           SDL_GetError());
-  }
-
-  if (SDL_LockTexture(texture, NULL, &mPixels, &mPitch) != 0)
-  {
-    printf("Unable to lock texture! %s\n", SDL_GetError());
-  }
-  else
-  {
-    //Allocate format from window
-    //Uint32 format = SDL_GetWindowPixelFormat( window );
-
-    SDL_PixelFormat *mappingFormat = SDL_AllocFormat(TEXTUREFORMAT);
-
-    int texWidth = 0;
-    int texHeight = 0;
-
-    Uint32 texFormat;
-    SDL_QueryTexture(texture, &texFormat, NULL, &texWidth, &texHeight);
-
-    //Get pixel data
-    Uint32 *pixels = (Uint32 *)mPixels;
-    int pixelCount = (mPitch / 4) * texHeight;
-
-    //cout << "texformat:" << texFormat << "\n";
-    //cout << "texWidth:" << texWidth << "\n";
-    //cout << "texHeight:" << texHeight << "\n";
-    //cout << "mPitch:" << mPitch << "\n";
-    //cout << "pixelCount:" << pixelCount << "\n";
-
-    //Map colors
-
-    Uint32 colorKeyWhite = SDL_MapRGBA(mappingFormat, 0xFF, 0xFF, 0xFF, 0xFF);
-    Uint32 colorKeyGray = SDL_MapRGBA(mappingFormat, 153, 153, 153, 0xFF);
-
-    Uint32 transparent = SDL_MapRGBA(mappingFormat, 0xFF, 0xFF, 0xFF, 0);
-
-    //Color key pixels
-    for (int i = 0; i < pixelCount; ++i)
+    if (texture == NULL)
     {
-      //cout << "col:" << pixels[i] << "\n";
-      //cout << "key:" << colorKey << "\n";
-
-      if (pixels[i] == colorKeyWhite || pixels[i] == colorKeyGray)
-      {
-        pixels[i] = transparent;
-      }
+        printf("Input Texture is null in RemoveTextureWhiteSpace! SDL Error: %s\n",
+                SDL_GetError());
     }
 
-    SDL_UnlockTexture(texture);
-    //mPixels = NULL;
-    //Free format
-    SDL_FreeFormat(mappingFormat);
-  }
+    if (SDL_LockTexture(texture, NULL, &mPixels, &mPitch) != 0)
+    {
+        printf("Unable to lock texture! %s\n", SDL_GetError());
+    }
+    else
+    {
+        //Allocate format from window
+        //Uint32 format = SDL_GetWindowPixelFormat( window );
+
+        SDL_PixelFormat *mappingFormat = SDL_AllocFormat(TEXTUREFORMAT);
+
+        int texWidth = 0;
+        int texHeight = 0;
+
+        Uint32 texFormat;
+        SDL_QueryTexture(texture, &texFormat, NULL, &texWidth, &texHeight);
+
+        //Get pixel data
+        Uint32 *pixels = (Uint32 *)mPixels;
+        int pixelCount = (mPitch / 4) * texHeight;
+
+        //cout << "texformat:" << texFormat << "\n";
+        //cout << "texWidth:" << texWidth << "\n";
+        //cout << "texHeight:" << texHeight << "\n";
+        //cout << "mPitch:" << mPitch << "\n";
+        //cout << "pixelCount:" << pixelCount << "\n";
+
+        //Map colors
+
+        Uint32 colorKeyWhite = SDL_MapRGBA(mappingFormat, 0xFF, 0xFF, 0xFF, 0xFF);
+        Uint32 colorKeyGray = SDL_MapRGBA(mappingFormat, 153, 153, 153, 0xFF);
+
+        Uint32 transparent = SDL_MapRGBA(mappingFormat, 0xFF, 0xFF, 0xFF, 0);
+
+        //Color key pixels
+        for (int i = 0; i < pixelCount; ++i)
+        {
+            //cout << "col:" << pixels[i] << "\n";
+            //cout << "key:" << colorKey << "\n";
+
+            if (pixels[i] == colorKeyWhite || pixels[i] == colorKeyGray)
+            {
+                pixels[i] = transparent;
+            }
+        }
+
+        SDL_UnlockTexture(texture);
+        //mPixels = NULL;
+        //Free format
+        SDL_FreeFormat(mappingFormat);
+    }
 }
 
 Texture InitTexture(SDL_Texture *sdlTexture, int x, int y)
@@ -235,3 +235,34 @@ void RenderTexture(SDL_Renderer *renderer, Texture tex)
     SDL_RenderCopyEx(renderer, tex.mTexture, &srcRect, &dstRect, tex.mRotation, tex.mCenter, tex.mFlip);
 }
 
+void RenderPolygon(SDL_Renderer *renderer, SDL_Point center, SDL_Point start)
+{
+    //Convert degrees to radians
+    double rad = 45  * PI / (double)180.0;
+
+    SDL_Point curVal;
+    curVal.x = start.x;
+    curVal.y = start.y;
+
+    SDL_Point nextVal;
+
+
+    double cosVal = cos(rad);
+    double sinVal = sin(rad);
+    //Clockwise rotation about center points
+    for(int i = 0; i < 8; i++)
+    { 
+        //Origin point
+        nextVal.x = (cosVal * (curVal.x - center.x)) - (sinVal * (curVal.y - center.y)) + center.x;
+        nextVal.y = (sinVal * (curVal.x - center.x)) + (cosVal * (curVal.y - center.y)) + center.y;
+
+        SDL_RenderDrawPoint(renderer, center.x, center.y);
+
+        SDL_RenderDrawLine(renderer, curVal.x, curVal.y, nextVal.x, nextVal.y);
+        //cout << "ori x: " << xVal << " y: " << yVa << "\n";
+        //cout << "new x: " << xNew << " y: " << yNew << "\n";
+
+        curVal.x = nextVal.x;
+        curVal.y = nextVal.y;
+    }
+}

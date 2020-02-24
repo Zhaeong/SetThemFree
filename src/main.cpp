@@ -19,9 +19,13 @@ Texture Title;
 
 int screenR, screenG, screenB;
 
-float xDeca = 300;
-float yDeca = 300;
+SDL_Point center;
 
+
+SDL_Point startVal;
+
+vect2 direction;
+int radius;
 void gameloop() 
 {
     Uint32 frameStart;
@@ -66,54 +70,40 @@ void gameloop()
     //Render circle
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    //Midpoint
-    int centerX = 250;
-    int centerY = 250;
 
-    int radius = 150;
-
+    startVal.x = center.x + direction.x * radius;
+    startVal.y = center.y + direction.y * radius;
+    RenderPolygon(renderer, center, startVal); 
 
 
-    //Convert degrees to radians
-    double rad = 36 * PI / (double)180.0;
 
-    float xVal = xDeca;
-    float yVal = yDeca;
-    float xNew;
-    float yNew;
+    //Rototate the startval
+    double rad = 1  * PI / (double)180.0;
+    //Normalize the vector
+    float vecLength = sqrt(
+            (direction.x * direction.x) +
+            (direction.y * direction.y)
+            );
+    float dirX = direction.x / vecLength;
+    float dirY = direction.y / vecLength;
 
-    double cosVal = cos(rad);
-    double sinVal = sin(rad);
-    //Clockwise rotation about center points
-    for(int i = 0; i < 10; i++)
-    { 
-        //Origin point
-        xNew = (cosVal * (xVal - centerX)) - (sinVal * (yVal - centerY)) + centerX;
-        yNew = (sinVal * (xVal - centerX)) + (cosVal * (yVal - centerY)) + centerY;
+    //apply transformation
+    float newX = dirX * cos(rad) - dirY * sin(rad);
+    float newY = dirX * sin(rad) + dirY * cos(rad);
 
-        SDL_RenderDrawPoint(renderer, centerX, centerY);
+    //round to 2 decimal points
+    direction.x = roundf(newX * 100) / 100;
+    direction.y = roundf(newY * 100) / 100; 
 
-        SDL_RenderDrawLine(renderer, xVal, yVal, xNew, yNew);
-        //cout << "ori x: " << xVal << " y: " << yVal << "\n";
-        //cout << "new x: " << xNew << " y: " << yNew << "\n";
 
-        xVal = xNew;
-        yVal = yNew;
-    }
 
-    //Translate xDeca by one degree 
-/*
-    rad = 45 * PI / (double)180.0;
-    cosVal = cos(rad);
-    sinVal = sin(rad);
 
-    xDeca = (cosVal * (xDeca - centerX)) - (sinVal * (xDeca - centerY)) + centerX;
-    yDeca = (sinVal * (xDeca - centerX)) + (cosVal * (yDeca - centerY)) + centerY;
-*/
-    yDeca += 1;
+    /* 
     //emscripten_cancel_main_loop();
     //Set screen color back to screen defaults
     //SDL_SetRenderDrawColor(renderer, screenR, screenG, screenB, 255);
+
+     */
     ////////////////////////////////////////////////////////////////////////
     //End of main game code
     ////////////////////////////////////////////////////////////////////////
@@ -148,9 +138,14 @@ int main(int argv, char **args)
     RemoveTextureWhiteSpace(window, titleTex);
     Title = InitTexture(titleTex, 20, 20); 
 
-    xDeca = 250;
-    yDeca = 300;
+    center.x = 250;
+    center.y = 250;
+    //startVal.x = 300;
+    //startVal.y = 300;
 
+    direction.x = 0;
+    direction.y = 1;
+    radius = 50;
 #ifdef EMSCRIPTEN
     emscripten_set_main_loop(gameloop, 0, 0);
 #else

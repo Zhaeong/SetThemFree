@@ -24,5 +24,6 @@ void RenderTexture(SDL_Renderer *renderer, Texture tex);
 
 void RemoveTextureWhiteSpace(SDL_Window *window, SDL_Texture *texture);
 
+void RenderPolygon(SDL_Renderer *renderer, SDL_Point center, SDL_Point start);
 #endif // GAME_H
  

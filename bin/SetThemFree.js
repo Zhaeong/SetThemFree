@@ -195,7 +195,7 @@ Module['FS_createPath']('/res', 'png', true, true);
     }
   
    }
-   loadPackage({"files": [{"filename": "/res/png/title.png", "start": 0, "end": 1241, "audio": 0}], "remote_package_size": 1241, "package_uuid": "a9af5e4d-47a1-4ab0-9d84-cb904de0cc31"});
+   loadPackage({"files": [{"filename": "/res/png/polygon.png", "start": 0, "end": 1241, "audio": 0}, {"filename": "/res/png/title.png", "start": 1241, "end": 2482, "audio": 0}], "remote_package_size": 2482, "package_uuid": "b72cfb6f-415e-4296-8134-7cdd0139b31c"});
   
   })();
   

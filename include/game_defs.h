@@ -37,11 +37,12 @@ struct vect2
     float y;
 };
 
+/*
 static float vect2dot(vect2 v1, vect2 v2)
 {
     return v1.x * v2.x + v1.y * v2.y;
 }
-
+*/
 
 #endif // GAMEDEFS_H
 
