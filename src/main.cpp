@@ -21,11 +21,15 @@ int screenR, screenG, screenB;
 
 SDL_Point center;
 
-
-SDL_Point startVal;
-
 vect2 direction;
 int radius;
+
+SDL_Point polygonArray[8];
+
+int rotation = 0;
+
+
+
 void gameloop() 
 {
     Uint32 frameStart;
@@ -58,6 +62,8 @@ void gameloop()
                 break;
             case SDL_MOUSEBUTTONUP:
                 cout <<  "MOUSE_UP\n";
+                rotation+=1;
+                cout << "Rototate: " << rotation << "\n";
                 break;
             case SDL_QUIT:
                 exit(0);
@@ -67,43 +73,29 @@ void gameloop()
 
     RenderTexture(renderer, Title);
 
+    //Calculate poly points
+    GetPolygonPoints(polygonArray, center, radius, direction);
+
+
     //Render circle
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-    startVal.x = center.x + direction.x * radius;
-    startVal.y = center.y + direction.y * radius;
-    RenderPolygon(renderer, center, startVal); 
 
+    //RenderPolygon(renderer, center, radius, direction); 
+    RenderPolygon(renderer, polygonArray);
 
 
     //Rototate the startval
-    double rad = 1  * PI / (double)180.0;
-    //Normalize the vector
-    float vecLength = sqrt(
-            (direction.x * direction.x) +
-            (direction.y * direction.y)
-            );
-    float dirX = direction.x / vecLength;
-    float dirY = direction.y / vecLength;
-
-    //apply transformation
-    float newX = dirX * cos(rad) - dirY * sin(rad);
-    float newY = dirX * sin(rad) + dirY * cos(rad);
-
-    //round to 2 decimal points
-    direction.x = roundf(newX * 100) / 100;
-    direction.y = roundf(newY * 100) / 100; 
+    direction = RotateVector(direction, rotation); 
 
 
-
-
-    /* 
+     
     //emscripten_cancel_main_loop();
     //Set screen color back to screen defaults
     //SDL_SetRenderDrawColor(renderer, screenR, screenG, screenB, 255);
 
-     */
+     
     ////////////////////////////////////////////////////////////////////////
     //End of main game code
     ////////////////////////////////////////////////////////////////////////

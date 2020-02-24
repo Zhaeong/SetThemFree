@@ -24,6 +24,16 @@ void RenderTexture(SDL_Renderer *renderer, Texture tex);
 
 void RemoveTextureWhiteSpace(SDL_Window *window, SDL_Texture *texture);
 
-void RenderPolygon(SDL_Renderer *renderer, SDL_Point center, SDL_Point start);
+void GetPolygonPoints(SDL_Point *polygonarray, SDL_Point center, int radius, vect2 direction);
+
+void RenderPolygon(SDL_Renderer *renderer, SDL_Point *polygonArray); 
+
+vect2 RotateVector(vect2 direction, int rotation);
+
+
+
+
+
+
 #endif // GAME_H
  

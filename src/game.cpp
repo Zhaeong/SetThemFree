@@ -235,14 +235,16 @@ void RenderTexture(SDL_Renderer *renderer, Texture tex)
     SDL_RenderCopyEx(renderer, tex.mTexture, &srcRect, &dstRect, tex.mRotation, tex.mCenter, tex.mFlip);
 }
 
-void RenderPolygon(SDL_Renderer *renderer, SDL_Point center, SDL_Point start)
+void GetPolygonPoints(SDL_Point *polygonArray, SDL_Point center, int radius, vect2 direction)
 {
     //Convert degrees to radians
     double rad = 45  * PI / (double)180.0;
 
     SDL_Point curVal;
-    curVal.x = start.x;
-    curVal.y = start.y;
+
+    curVal.x = center.x + direction.x * radius;
+    curVal.y = center.y + direction.y * radius;
+
 
     SDL_Point nextVal;
 
@@ -252,17 +254,68 @@ void RenderPolygon(SDL_Renderer *renderer, SDL_Point center, SDL_Point start)
     //Clockwise rotation about center points
     for(int i = 0; i < 8; i++)
     { 
+        //Normalize the vector
+        float vecLength = sqrt(
+                (direction.x * direction.x) +
+                (direction.y * direction.y)
+                );
+        float dirX = direction.x / vecLength;
+        float dirY = direction.y / vecLength;
+
+        //apply transformation
+        float newX = dirX * cosVal - dirY * sinVal;
+        float newY = dirX * sinVal + dirY * cosVal;
+
+        //round to 2 decimal points
+        direction.x = roundf(newX * 100) / 100;
+        direction.y = roundf(newY * 100) / 100; 
         //Origin point
-        nextVal.x = (cosVal * (curVal.x - center.x)) - (sinVal * (curVal.y - center.y)) + center.x;
-        nextVal.y = (sinVal * (curVal.x - center.x)) + (cosVal * (curVal.y - center.y)) + center.y;
+        nextVal.x = center.x + direction.x * radius;
+        nextVal.y = center.y + direction.y * radius;
 
-        SDL_RenderDrawPoint(renderer, center.x, center.y);
-
-        SDL_RenderDrawLine(renderer, curVal.x, curVal.y, nextVal.x, nextVal.y);
-        //cout << "ori x: " << xVal << " y: " << yVa << "\n";
-        //cout << "new x: " << xNew << " y: " << yNew << "\n";
-
+        polygonArray[i] = curVal;
         curVal.x = nextVal.x;
         curVal.y = nextVal.y;
     }
+}
+
+
+void RenderPolygon(SDL_Renderer *renderer, SDL_Point *polygonArray) 
+{
+
+    for(int i = 0; i < 8; i++)
+    {
+
+        if(i == 7)
+        {
+            SDL_RenderDrawLine(renderer, polygonArray[i].x, polygonArray[i].y, polygonArray[0].x, polygonArray[0].y);
+        }
+        else
+        {
+            SDL_RenderDrawLine(renderer, polygonArray[i].x, polygonArray[i].y, polygonArray[i+1].x, polygonArray[i+1].y);
+            //cout << "render x: " << polygonArray[i].x << " y: " << polygonArray[i].y << " x2: " << polygonArray[i+1].x << " y2: " << polygonArray[i+1].y << "\n";
+        }
+    }
+}
+
+vect2 RotateVector(vect2 direction, int rotation)
+{
+    double rad = rotation * PI / (double)180.0;
+    //Normalize the vector
+    float vecLength = sqrt(
+            (direction.x * direction.x) +
+            (direction.y * direction.y)
+            );
+    float dirX = direction.x / vecLength;
+    float dirY = direction.y / vecLength;
+
+    //apply transformation
+    float newX = dirX * cos(rad) - dirY * sin(rad);
+    float newY = dirX * sin(rad) + dirY * cos(rad);
+
+    //round to 2 decimal points
+    direction.x = roundf(newX * 100) / 100;
+    direction.y = roundf(newY * 100) / 100; 
+
+    return direction;
 }
