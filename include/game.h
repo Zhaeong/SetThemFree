@@ -22,7 +22,7 @@ Texture InitTexture(SDL_Texture *sdlTexture, int x, int y);
 
 void RenderTexture(SDL_Renderer *renderer, Texture tex);
 
-void RemoveTextureWhiteSpace(SDL_Window *window, SDL_Texture *texture);
+void RemoveTextureWhiteSpace(SDL_Texture *texture);
 
 void GetPolygonPoints(SDL_Point *polygonarray, SDL_Point center, int radius, vect2 direction);
 
@@ -30,7 +30,7 @@ void RenderPolygon(SDL_Renderer *renderer, SDL_Point *polygonArray);
 
 vect2 RotateVector(vect2 direction, int rotation);
 
-
+bool CheckPointInCircle(SDL_Point circleCenter, int radius, SDL_Point checkPoint);
 
 
 

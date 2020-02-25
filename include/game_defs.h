@@ -26,6 +26,7 @@ struct Texture
     int mW;
     int mH;
     int mRotation;
+    int mAlpha;
     SDL_Texture *mTexture;
     SDL_Point *mCenter;
     SDL_RendererFlip mFlip;

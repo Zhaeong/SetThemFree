@@ -135,7 +135,7 @@ SDL_Texture *GetSDLTexture(SDL_Renderer *renderer, SDL_Window *window, string te
     return texture;
 }
 
-void RemoveTextureWhiteSpace(SDL_Window *window, SDL_Texture *texture)
+void RemoveTextureWhiteSpace(SDL_Texture *texture)
 {
     void *mPixels;
     int mPitch;
@@ -206,6 +206,7 @@ Texture InitTexture(SDL_Texture *sdlTexture, int x, int y)
     outTex.mY = y;
     SDL_QueryTexture(sdlTexture, NULL, NULL, &outTex.mW, &outTex.mH);
     outTex.mRotation = 0;
+    outTex.mAlpha = 255;
     outTex.mTexture = sdlTexture;
     outTex.mCenter = NULL;
     outTex.mFlip = SDL_FLIP_NONE;
@@ -217,7 +218,7 @@ void RenderTexture(SDL_Renderer *renderer, Texture tex)
 
     SDL_SetTextureBlendMode(tex.mTexture, SDL_BLENDMODE_BLEND);
 
-    //SDL_SetTextureAlphaMod(tex.mTexture, tex.mAlpha);
+    SDL_SetTextureAlphaMod(tex.mTexture, tex.mAlpha);
 
     SDL_Rect srcRect;
     SDL_Rect dstRect;
@@ -319,3 +320,18 @@ vect2 RotateVector(vect2 direction, int rotation)
 
     return direction;
 }
+
+bool CheckPointInCircle(SDL_Point circleCenter, int radius, SDL_Point checkPoint)
+{
+    //Compute distance between point and circlecenter, and check if that distance is smaller than radius
+    //No need to square root due, just square radius 
+    if ((checkPoint.x - circleCenter.x) * (checkPoint.x - circleCenter.x) + 
+            (checkPoint.y - circleCenter.y) * (checkPoint.y - circleCenter.y) <= radius * radius) 
+    {
+        return true; 
+    } 
+    else
+    { 
+        return false; 
+    }
+} 

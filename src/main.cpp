@@ -9,14 +9,14 @@ const int FPS = 60;
 //How many miliseconds per frame
 const int FrameDelay = 1000 / FPS;
 
-string GameState = "LOAD";
+string GameState = "START";
 
 //Initial Loading
 SDL_Rect srcRect;
 SDL_Rect dstRect;
 
 Texture Title;
-
+Texture Heart;
 int screenR, screenG, screenB;
 
 SDL_Point center;
@@ -28,6 +28,8 @@ SDL_Point polygonArray[8];
 
 int rotation = 0;
 
+Uint32 gameTime = 0;
+Uint32 startTime = 0;
 
 
 void gameloop() 
@@ -57,45 +59,75 @@ void gameloop()
                 cout << "pressed\n"; 
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                SDL_GetMouseState(&xMouse, &yMouse);
-                cout << "MOUSE_DOWN x: " << xMouse << " y:" << yMouse << "\n";
+                cout << "MOUSE_DOWN \n";
                 break;
             case SDL_MOUSEBUTTONUP:
-                cout <<  "MOUSE_UP\n";
-                rotation+=1;
-                cout << "Rototate: " << rotation << "\n";
-                break;
+                {
+                    cout <<  "MOUSE_UP\n";
+                    rotation+=1;
+                    SDL_GetMouseState(&xMouse, &yMouse);
+
+                    SDL_Point mousePoint = {xMouse, yMouse};
+                    if(CheckPointInCircle(center, radius, mousePoint))
+                    {
+                        cout << "In polygon\n";
+                        if(GameState == "START")
+                        {
+                            GameState = "FADETITLE";
+                        }
+
+                    }
+                    Heart.mW += 1;
+                    Heart.mH += 1;
+                    cout << "GameState: " << GameState << "\n";
+                    break;
+                }
             case SDL_QUIT:
                 exit(0);
                 break;
         }
     }
 
-    RenderTexture(renderer, Title);
+    if(GameState == "FADETITLE")
+    {
+        if(Title.mAlpha > 0)
+        {
+            Title.mAlpha -= 5;  
+        }
+        else
+        {
+            GameState = "TODDLER";
+        }
+    }
 
     //Calculate poly points
     GetPolygonPoints(polygonArray, center, radius, direction);
 
+    //Set heart in middle of polygon
+    Heart.mX = center.x - (Heart.mW/2);
+    Heart.mY = center.y - (Heart.mH/2);
+
+    RenderTexture(renderer, Title);
+
 
     //Render circle
-
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-
-    //RenderPolygon(renderer, center, radius, direction); 
     RenderPolygon(renderer, polygonArray);
 
+    //Render Heart 
+    RenderTexture(renderer, Heart);
 
     //Rototate the startval
     direction = RotateVector(direction, rotation); 
 
 
-     
+
     //emscripten_cancel_main_loop();
     //Set screen color back to screen defaults
     //SDL_SetRenderDrawColor(renderer, screenR, screenG, screenB, 255);
 
-     
+
     ////////////////////////////////////////////////////////////////////////
     //End of main game code
     ////////////////////////////////////////////////////////////////////////
@@ -106,7 +138,7 @@ void gameloop()
     {
         SDL_Delay(FrameDelay - frameTime);
     }
-    //cout << "lopidy" << frameTime << "\n";
+
     //emscripten_cancel_main_loop();
 }
 
@@ -118,22 +150,23 @@ int main(int argv, char **args)
 {
     cout << "Starting Game\n";
 
-
     //Initiate SDL
     StartSDL(&window, &renderer);
 
-
-    screenR = 17;
-    screenG = 17; 
-    screenB = 17;
+    screenR = 191;
+    screenG = 232; 
+    screenB = 242;
     SDL_Texture *titleTex = GetSDLTexture(renderer, window, "./res/png/title.png");
-    RemoveTextureWhiteSpace(window, titleTex);
+    RemoveTextureWhiteSpace(titleTex);
     Title = InitTexture(titleTex, 20, 20); 
+    Title.mX = 500/2 - (Title.mW/2);
+    Title.mY = 50;
+    SDL_Texture *heartTex = GetSDLTexture(renderer, window, "./res/png/heart.png");
+    RemoveTextureWhiteSpace(heartTex);
+    Heart = InitTexture(heartTex, 20, 20);  
 
     center.x = 250;
     center.y = 250;
-    //startVal.x = 300;
-    //startVal.y = 300;
 
     direction.x = 0;
     direction.y = 1;
