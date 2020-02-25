@@ -24,6 +24,8 @@ void RenderTexture(SDL_Renderer *renderer, Texture tex);
 
 void RemoveTextureWhiteSpace(SDL_Texture *texture);
 
+void SetTextureColor(SDL_Texture *texture, int R, int G, int B, int A);
+
 void GetPolygonPoints(SDL_Point *polygonarray, SDL_Point center, int radius, vect2 direction);
 
 void RenderPolygon(SDL_Renderer *renderer, SDL_Point *polygonArray); 

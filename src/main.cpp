@@ -31,6 +31,11 @@ int rotation = 0;
 Uint32 gameTime = 0;
 Uint32 startTime = 0;
 
+//Toddler vars
+SDL_Color reject = {255, 0, 0, 150};
+SDL_Color listen = {0, 255, 0, 150};
+SDL_Color curColor;
+
 
 void gameloop() 
 {
@@ -64,7 +69,7 @@ void gameloop()
             case SDL_MOUSEBUTTONUP:
                 {
                     cout <<  "MOUSE_UP\n";
-                    rotation+=1;
+                    //rotation+=1;
                     SDL_GetMouseState(&xMouse, &yMouse);
 
                     SDL_Point mousePoint = {xMouse, yMouse};
@@ -74,6 +79,8 @@ void gameloop()
                         if(GameState == "START")
                         {
                             GameState = "FADETITLE";
+                            curColor = listen;
+
                         }
 
                     }
@@ -97,7 +104,14 @@ void gameloop()
         else
         {
             GameState = "TODDLER";
+
         }
+    }
+    else if(GameState == "TODDLER")
+    {
+        SetTextureColor(Heart.mTexture, curColor.r, curColor.g, curColor.b, curColor.a);
+        curColor.r += 1;
+        curColor.g -= 1;
     }
 
     //Calculate poly points
@@ -120,7 +134,6 @@ void gameloop()
 
     //Rototate the startval
     direction = RotateVector(direction, rotation); 
-
 
 
     //emscripten_cancel_main_loop();

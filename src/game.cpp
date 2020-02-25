@@ -215,27 +215,81 @@ Texture InitTexture(SDL_Texture *sdlTexture, int x, int y)
 
 void RenderTexture(SDL_Renderer *renderer, Texture tex)
 {
+    //Don't render if the alpha is 0
+    if(tex.mAlpha > 0)
+    {
+        SDL_SetTextureBlendMode(tex.mTexture, SDL_BLENDMODE_BLEND);
 
-    SDL_SetTextureBlendMode(tex.mTexture, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(tex.mTexture, tex.mAlpha);
 
-    SDL_SetTextureAlphaMod(tex.mTexture, tex.mAlpha);
+        SDL_Rect srcRect;
+        SDL_Rect dstRect;
 
-    SDL_Rect srcRect;
-    SDL_Rect dstRect;
+        srcRect.x = 0;
+        srcRect.y = 0;
+        srcRect.h = tex.mH;
+        srcRect.w = tex.mW;
 
-    srcRect.x = 0;
-    srcRect.y = 0;
-    srcRect.h = tex.mH;
-    srcRect.w = tex.mW;
+        dstRect.x = tex.mX;
+        dstRect.y = tex.mY;
+        dstRect.h = tex.mH;
+        dstRect.w = tex.mW;
 
-    dstRect.x = tex.mX;
-    dstRect.y = tex.mY;
-    dstRect.h = tex.mH;
-    dstRect.w = tex.mW;
-
-    SDL_RenderCopyEx(renderer, tex.mTexture, &srcRect, &dstRect, tex.mRotation, tex.mCenter, tex.mFlip);
+        SDL_RenderCopyEx(renderer, tex.mTexture, &srcRect, &dstRect, tex.mRotation, tex.mCenter, tex.mFlip);
+    }
 }
 
+void SetTextureColor(SDL_Texture *texture, int R, int G, int B, int A)
+{
+    void *mPixels;
+    int mPitch;
+
+    if (texture == NULL)
+    {
+        printf("Input Texture is null in RemoveTextureWhiteSpace! SDL Error: %s\n",
+                SDL_GetError());
+    }
+
+    if (SDL_LockTexture(texture, NULL, &mPixels, &mPitch) != 0)
+    {
+        printf("Unable to lock texture! %s\n", SDL_GetError());
+    }
+    else
+    {
+        SDL_PixelFormat *mappingFormat = SDL_AllocFormat(TEXTUREFORMAT);
+
+        int texWidth = 0;
+        int texHeight = 0;
+
+        Uint32 texFormat;
+        SDL_QueryTexture(texture, &texFormat, NULL, &texWidth, &texHeight);
+
+        //Get pixel data
+        Uint32 *pixels = (Uint32 *)mPixels;
+        int pixelCount = (mPitch / 4) * texHeight;
+
+        //Map colors
+
+        Uint32 colorKey = SDL_MapRGBA(mappingFormat, R, G, B, A);
+
+        Uint32 transparent = SDL_MapRGBA(mappingFormat, 0xFF, 0xFF, 0xFF, 0);
+
+        //Color key pixels
+        for (int i = 0; i < pixelCount; ++i)
+        {
+
+            if (pixels[i] != transparent)
+            {
+                pixels[i] = colorKey;
+            }
+        }
+
+        SDL_UnlockTexture(texture);
+
+        //Free format
+        SDL_FreeFormat(mappingFormat);
+    }
+}
 void GetPolygonPoints(SDL_Point *polygonArray, SDL_Point center, int radius, vect2 direction)
 {
     //Convert degrees to radians
