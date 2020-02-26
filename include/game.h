@@ -34,7 +34,7 @@ vect2 RotateVector(vect2 direction, int rotation);
 
 bool CheckPointInCircle(SDL_Point circleCenter, int radius, SDL_Point checkPoint);
 
-
+bool TextureMouseCollisionSingle(Texture mTexture, int xPos, int yPos);
 
 
 #endif // GAME_H

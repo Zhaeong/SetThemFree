@@ -15,9 +15,12 @@ string GameState = "MENU";
 SDL_Rect srcRect;
 SDL_Rect dstRect;
 
+//Texture declarations
 Texture Title;
 Texture HeartGreen;
 Texture HeartRed;
+Texture GiveGuidance;
+Texture Guidance;
 
 SDL_Color screenColor;
 
@@ -31,15 +34,18 @@ SDL_Point polygonArray[8];
 int rotation = 0;
 
 Uint32 gameStartTime = 0;
-
-
+Uint32 stateBeginTime;
 Uint32 nextStateTime;
-//TODDLER vars
+//Mood vars
 int greenTime;
 int redTime;
 string Mood = "GREEN";
 string nextMood;
 Uint32 moodTransitionTime;
+
+//Childhood vars
+string guidanceState = "MINE";
+
 
 void gameloop() 
 {
@@ -87,7 +93,6 @@ void gameloop()
                         }
                         else if(GameState == "TODDLER")
                         {
-
                             if(Mood == "STAY")
                             {
                                 //next mood is opposite of current mood
@@ -109,6 +114,21 @@ void gameloop()
                             cout <<"curRad: " << radius << "\n";
                         }
 
+
+                    }
+
+                    if(GameState == "CHILDHOOD")
+                    {
+                        cout << "mouse x: " << mousePoint.x << " mouse y: " << mousePoint.y << "\n";
+                        cout << "tex x: " << GiveGuidance.mX << " y: " << GiveGuidance.mY << " w: " << GiveGuidance.mW << " h: " << GiveGuidance.mH << "\n";
+                        if(TextureMouseCollisionSingle(GiveGuidance, mousePoint.x, mousePoint.y))
+                        {
+                            cout << "Gave Guidance\n";
+                            if(guidanceState == "MINE")
+                            {
+                                guidanceState = "GIVING";
+                            }
+                        }
                     }
                     cout << "GameState: " << GameState << "\n";
                     break;
@@ -137,6 +157,7 @@ void gameloop()
             redTime = rand() % 8 + 1;
 
             //Set Childhood state to 30s
+            stateBeginTime = SDL_GetTicks() - gameStartTime;
             nextStateTime = gameStartTime + (30 * 1000);
             cout << "GreenTime: " << greenTime << " RedTime: " << redTime << "\n"; 
         }
@@ -149,7 +170,9 @@ void gameloop()
             screenColor.r = 0;
             screenColor.g = 162; 
             screenColor.b = 232;
-
+            Guidance.mAlpha = 255;
+            GiveGuidance.mAlpha = 255;
+            stateBeginTime = SDL_GetTicks() - gameStartTime;
             cout << "State Childhood, gameStartTime: " << gameStartTime << " nextStateTime: " << nextStateTime << "\n";
         }
 
@@ -157,6 +180,16 @@ void gameloop()
     else if(GameState == "CHILDHOOD")
     {
         rotation = 1;
+        if(guidanceState == "GIVING")
+        {
+            Guidance.mY -= 1;
+        }
+
+        if(Guidance.mY < (center.y + radius))
+        {
+            Guidance.mY = GiveGuidance.mY;
+            guidanceState = "MINE";
+        }
     }
 
     //Mood changing calculations
@@ -181,7 +214,7 @@ void gameloop()
             if(frameStart > moodTransitionTime)
             {
                 Mood = "TRANSITION";
-                cout << "InTransition\n";
+                //cout << "InTransition\n";
             }
         }
         else if(Mood == "TRANSITION")
@@ -196,7 +229,7 @@ void gameloop()
                 else
                 {
                     Mood = "RED";
-                    cout << "Change to: " << Mood << "\n";
+                    //cout << "Change to: " << Mood << "\n";
                 }
             }
             if(nextMood == "GREEN")
@@ -209,7 +242,7 @@ void gameloop()
                 else
                 {
                     Mood = "GREEN";
-                    cout << "Change to: " << Mood << "\n";
+                    //cout << "Change to: " << Mood << "\n";
 
                 }
             }
@@ -237,6 +270,8 @@ void gameloop()
     //Render Heart 
     RenderTexture(renderer, HeartGreen);
     RenderTexture(renderer, HeartRed);
+    RenderTexture(renderer, GiveGuidance);
+    RenderTexture(renderer, Guidance);
 
     //Rototate the startval
     direction = RotateVector(direction, rotation); 
@@ -280,18 +315,32 @@ int main(int argv, char **args)
     SDL_Texture *titleTex = GetSDLTexture(renderer, window, "./res/png/title.png");
     RemoveTextureWhiteSpace(titleTex);
     Title = InitTexture(titleTex, 20, 20); 
-    Title.mX = 500/2 - (Title.mW/2);
+    Title.mX = GAMEWIDTH/2 - (Title.mW/2);
     Title.mY = 50;
 
     SDL_Texture *heartTexGreen = GetSDLTexture(renderer, window, "./res/png/heartGreen.png");
     RemoveTextureWhiteSpace(heartTexGreen);
     HeartGreen = InitTexture(heartTexGreen, 20, 20);  
 
-    SDL_Texture *heartTexResRED = GetSDLTexture(renderer, window, "./res/png/heartRed.png");
-    RemoveTextureWhiteSpace(heartTexResRED);
-    HeartRed = InitTexture(heartTexResRED, 20, 20); 
+    SDL_Texture *heartTexRED = GetSDLTexture(renderer, window, "./res/png/heartRed.png");
+    RemoveTextureWhiteSpace(heartTexRED);
+    HeartRed = InitTexture(heartTexRED, 20, 20); 
     HeartRed.mAlpha = 0;
 
+    SDL_Texture *giveGuidanceTex = GetSDLTexture(renderer, window, "./res/png/giveGuidance.png");
+    RemoveTextureWhiteSpace(giveGuidanceTex);
+    GiveGuidance = InitTexture(giveGuidanceTex, 20, 20); 
+    GiveGuidance.mAlpha = 0;
+    GiveGuidance.mX = GAMEWIDTH/2 - (GiveGuidance.mW/2);
+    GiveGuidance.mY = GAMEHEIGHT - GiveGuidance.mH;
+
+    SDL_Texture *guidanceTex = GetSDLTexture(renderer, window, "./res/png/guidance.png");
+    RemoveTextureWhiteSpace(guidanceTex);
+    Guidance = InitTexture(guidanceTex, 20, 20); 
+    Guidance.mAlpha = 0;
+    Guidance.mX = GAMEWIDTH/2 - (Guidance.mW/2);
+    //Same as previous
+    Guidance.mY = GAMEHEIGHT - GiveGuidance.mH;
 
     center.x = 250;
     center.y = 250;

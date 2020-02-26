@@ -389,3 +389,18 @@ bool CheckPointInCircle(SDL_Point circleCenter, int radius, SDL_Point checkPoint
         return false; 
     }
 } 
+
+bool TextureMouseCollisionSingle(Texture mTexture, int xPos, int yPos)
+{
+
+  if (xPos >= mTexture.mX 
+      && xPos <= (mTexture.mX + mTexture.mW) 
+      && yPos >= mTexture.mY
+      && yPos <= (mTexture.mY + mTexture.mH) 
+     )
+  {
+    return true;
+  }
+
+  return false;
+}
