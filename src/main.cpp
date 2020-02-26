@@ -270,8 +270,8 @@ void gameloop()
     //Render Heart 
     RenderTexture(renderer, HeartGreen);
     RenderTexture(renderer, HeartRed);
-    RenderTexture(renderer, GiveGuidance);
     RenderTexture(renderer, Guidance);
+    RenderTexture(renderer, GiveGuidance);
 
     //Rototate the startval
     direction = RotateVector(direction, rotation); 
