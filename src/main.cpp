@@ -9,15 +9,17 @@ const int FPS = 60;
 //How many miliseconds per frame
 const int FrameDelay = 1000 / FPS;
 
-string GameState = "START";
+string GameState = "MENU";
 
 //Initial Loading
 SDL_Rect srcRect;
 SDL_Rect dstRect;
 
 Texture Title;
-Texture Heart;
-int screenR, screenG, screenB;
+Texture HeartGreen;
+Texture HeartRed;
+
+SDL_Color screenColor;
 
 SDL_Point center;
 
@@ -28,23 +30,25 @@ SDL_Point polygonArray[8];
 
 int rotation = 0;
 
-Uint32 gameTime = 0;
-Uint32 startTime = 0;
+Uint32 gameStartTime = 0;
 
-//Toddler vars
-SDL_Color reject = {255, 0, 0, 150};
-SDL_Color listen = {0, 255, 0, 150};
-SDL_Color curColor;
 
+Uint32 nextStateTime;
+//TODDLER vars
+int greenTime;
+int redTime;
+string Mood = "GREEN";
+string nextMood;
+Uint32 moodTransitionTime;
 
 void gameloop() 
 {
     Uint32 frameStart;
-    float frameTime;
+    Uint32 frameTime;
     frameStart = SDL_GetTicks();  
 
     //The color at which the screen will be if alpha = 0 on all textures
-    SDL_SetRenderDrawColor(renderer, screenR, screenG, screenB, 255);
+    SDL_SetRenderDrawColor(renderer, screenColor.r, screenColor.g, screenColor.b, screenColor.a);
 
     SDL_RenderClear(renderer);
 
@@ -76,16 +80,36 @@ void gameloop()
                     if(CheckPointInCircle(center, radius, mousePoint))
                     {
                         cout << "In polygon\n";
-                        if(GameState == "START")
+                        if(GameState == "MENU")
                         {
                             GameState = "FADETITLE";
-                            curColor = listen;
 
+                        }
+                        else if(GameState == "TODDLER")
+                        {
+
+                            if(Mood == "STAY")
+                            {
+                                //next mood is opposite of current mood
+                                if(nextMood == "RED")
+                                {
+                                    if(radius < 200)
+                                    {
+                                        radius += 1;
+                                    }
+                                }
+                                else if(nextMood == "GREEN")
+                                {
+                                    if(radius > 28)
+                                    {
+                                        radius -= 1;
+                                    }
+                                }
+                            }
+                            cout <<"curRad: " << radius << "\n";
                         }
 
                     }
-                    Heart.mW += 1;
-                    Heart.mH += 1;
                     cout << "GameState: " << GameState << "\n";
                     break;
                 }
@@ -103,23 +127,104 @@ void gameloop()
         }
         else
         {
+            gameStartTime = SDL_GetTicks();
             GameState = "TODDLER";
+            //Random seed whenever game starts
+            srand(time(NULL));
 
+            //Add 1 because transition time can't be 0
+            greenTime =  rand() % 8 + 1;
+            redTime = rand() % 8 + 1;
+
+            //Set Childhood state to 30s
+            nextStateTime = gameStartTime + (30 * 1000);
+            cout << "GreenTime: " << greenTime << " RedTime: " << redTime << "\n"; 
         }
     }
     else if(GameState == "TODDLER")
     {
-        SetTextureColor(Heart.mTexture, curColor.r, curColor.g, curColor.b, curColor.a);
-        curColor.r += 1;
-        curColor.g -= 1;
+        if(frameStart > nextStateTime)
+        {
+            GameState = "CHILDHOOD";
+            screenColor.r = 0;
+            screenColor.g = 162; 
+            screenColor.b = 232;
+
+            cout << "State Childhood, gameStartTime: " << gameStartTime << " nextStateTime: " << nextStateTime << "\n";
+        }
+
+    }
+    else if(GameState == "CHILDHOOD")
+    {
+        rotation = 1;
     }
 
+    //Mood changing calculations
+    if(GameState == "TODDLER" || GameState == "CHILDHOOD")
+    {
+        if(Mood == "GREEN")
+        {
+            //Set when to transition mood
+            moodTransitionTime = frameStart + (greenTime * 1000);
+            nextMood = "RED";
+            Mood = "STAY";
+        }
+        else if(Mood == "RED")
+        {
+            moodTransitionTime = frameStart + (redTime* 1000);
+            nextMood = "GREEN";
+            Mood = "STAY";
+        }
+        else if(Mood == "STAY")
+        {
+            //After it passes mood transition time, tranlate mood
+            if(frameStart > moodTransitionTime)
+            {
+                Mood = "TRANSITION";
+                cout << "InTransition\n";
+            }
+        }
+        else if(Mood == "TRANSITION")
+        {
+            if(nextMood == "RED")
+            {
+                if(HeartRed.mAlpha < 255)
+                {
+                    HeartRed.mAlpha++;
+                    HeartGreen.mAlpha--;
+                }
+                else
+                {
+                    Mood = "RED";
+                    cout << "Change to: " << Mood << "\n";
+                }
+            }
+            if(nextMood == "GREEN")
+            {
+                if(HeartGreen.mAlpha < 255)
+                {
+                    HeartGreen.mAlpha++;
+                    HeartRed.mAlpha--;
+                }
+                else
+                {
+                    Mood = "GREEN";
+                    cout << "Change to: " << Mood << "\n";
+
+                }
+            }
+        }
+    }
     //Calculate poly points
     GetPolygonPoints(polygonArray, center, radius, direction);
 
     //Set heart in middle of polygon
-    Heart.mX = center.x - (Heart.mW/2);
-    Heart.mY = center.y - (Heart.mH/2);
+    HeartGreen.mX = center.x - (HeartGreen.mW/2);
+    HeartGreen.mY = center.y - (HeartGreen.mH/2);
+
+    HeartRed.mX = center.x - (HeartRed.mW/2);
+    HeartRed.mY = center.y - (HeartRed.mH/2);
+
 
     RenderTexture(renderer, Title);
 
@@ -130,7 +235,8 @@ void gameloop()
     RenderPolygon(renderer, polygonArray);
 
     //Render Heart 
-    RenderTexture(renderer, Heart);
+    RenderTexture(renderer, HeartGreen);
+    RenderTexture(renderer, HeartRed);
 
     //Rototate the startval
     direction = RotateVector(direction, rotation); 
@@ -166,17 +272,26 @@ int main(int argv, char **args)
     //Initiate SDL
     StartSDL(&window, &renderer);
 
-    screenR = 191;
-    screenG = 232; 
-    screenB = 242;
+    screenColor.r = 191;
+    screenColor.g = 232; 
+    screenColor.b = 242;
+    screenColor.a = 255;
+
     SDL_Texture *titleTex = GetSDLTexture(renderer, window, "./res/png/title.png");
     RemoveTextureWhiteSpace(titleTex);
     Title = InitTexture(titleTex, 20, 20); 
     Title.mX = 500/2 - (Title.mW/2);
     Title.mY = 50;
-    SDL_Texture *heartTex = GetSDLTexture(renderer, window, "./res/png/heart.png");
-    RemoveTextureWhiteSpace(heartTex);
-    Heart = InitTexture(heartTex, 20, 20);  
+
+    SDL_Texture *heartTexGreen = GetSDLTexture(renderer, window, "./res/png/heartGreen.png");
+    RemoveTextureWhiteSpace(heartTexGreen);
+    HeartGreen = InitTexture(heartTexGreen, 20, 20);  
+
+    SDL_Texture *heartTexResRED = GetSDLTexture(renderer, window, "./res/png/heartRed.png");
+    RemoveTextureWhiteSpace(heartTexResRED);
+    HeartRed = InitTexture(heartTexResRED, 20, 20); 
+    HeartRed.mAlpha = 0;
+
 
     center.x = 250;
     center.y = 250;
