@@ -28,12 +28,10 @@ SDL_Color screenColor;
 SDL_Point center;
 
 vect2 direction;
-int radius;
 
-SDL_Point polygonArray[8];
 Triangle triangleArray[8];
 
-
+int radius;
 int rotation = 0;
 
 Uint32 gameStartTime = 0;
