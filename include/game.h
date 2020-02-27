@@ -26,11 +26,11 @@ void RemoveTextureWhiteSpace(SDL_Texture *texture);
 
 void SetTextureColor(SDL_Texture *texture, int R, int G, int B, int A);
 
-void GetPolygonPoints(SDL_Point *polygonarray, SDL_Point center, int radius, vect2 direction);
+void InitTriangleArray(Triangle *triangleArray, int radius);
 
-void RenderPolygon(SDL_Renderer *renderer, SDL_Point *polygonArray); 
+void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Point center);
 
-vect2 RotateVector(vect2 direction, int rotation);
+void RotateTriangleArray(Triangle *triangleArray, int rotation);
 
 bool CheckPointInCircle(SDL_Point circleCenter, int radius, SDL_Point checkPoint);
 

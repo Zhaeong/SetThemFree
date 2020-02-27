@@ -38,6 +38,13 @@ struct vect2
     float y;
 };
 
+struct Triangle
+{
+    vect2 direction;
+    int radius;
+    int numGuildance;
+};
+
 /*
 static float vect2dot(vect2 v1, vect2 v2)
 {

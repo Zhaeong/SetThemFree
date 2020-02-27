@@ -290,89 +290,107 @@ void SetTextureColor(SDL_Texture *texture, int R, int G, int B, int A)
         SDL_FreeFormat(mappingFormat);
     }
 }
-void GetPolygonPoints(SDL_Point *polygonArray, SDL_Point center, int radius, vect2 direction)
+
+void InitTriangleArray(Triangle *triangleArray, int radius)
 {
+    vect2 curDirection = {0 ,1};
+
     //Convert degrees to radians
     double rad = 45  * PI / (double)180.0;
-
-    SDL_Point curVal;
-
-    curVal.x = center.x + direction.x * radius;
-    curVal.y = center.y + direction.y * radius;
-
-
-    SDL_Point nextVal;
-
-
     double cosVal = cos(rad);
     double sinVal = sin(rad);
-    //Clockwise rotation about center points
+
     for(int i = 0; i < 8; i++)
     { 
+        Triangle polygonTri;
+        polygonTri.direction.x = curDirection.x;
+        polygonTri.direction.y = curDirection.y;
+        polygonTri.radius = radius;
+
+        triangleArray[i] = polygonTri;
+        //Now apply 45 degree rotation of the direction
         //Normalize the vector
         float vecLength = sqrt(
-                (direction.x * direction.x) +
-                (direction.y * direction.y)
+                (curDirection.x * curDirection.x) +
+                (curDirection.y * curDirection.y)
                 );
-        float dirX = direction.x / vecLength;
-        float dirY = direction.y / vecLength;
+        float dirX = curDirection.x / vecLength;
+        float dirY = curDirection.y / vecLength;
 
         //apply transformation
         float newX = dirX * cosVal - dirY * sinVal;
         float newY = dirX * sinVal + dirY * cosVal;
 
         //round to 2 decimal points
-        direction.x = roundf(newX * 100) / 100;
-        direction.y = roundf(newY * 100) / 100; 
-        //Origin point
-        nextVal.x = center.x + direction.x * radius;
-        nextVal.y = center.y + direction.y * radius;
+        curDirection.x = roundf(newX * 100) / 100;
+        curDirection.y = roundf(newY * 100) / 100; 
 
-        polygonArray[i] = curVal;
-        curVal.x = nextVal.x;
-        curVal.y = nextVal.y;
     }
+
 }
 
-
-void RenderPolygon(SDL_Renderer *renderer, SDL_Point *polygonArray) 
+void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Point center)
 {
-
+    //Convert degrees to radians
+    double rad = 45  * PI / (double)180.0;
+    double cosVal = cos(rad);
+    double sinVal = sin(rad);
     for(int i = 0; i < 8; i++)
-    {
+    { 
+        Triangle polygonTri = triangleArray[i];
+        vect2 secondDirection;
+        SDL_Point firstPoint, secondPoint;
 
-        if(i == 7)
-        {
-            SDL_RenderDrawLine(renderer, polygonArray[i].x, polygonArray[i].y, polygonArray[0].x, polygonArray[0].y);
-        }
-        else
-        {
-            SDL_RenderDrawLine(renderer, polygonArray[i].x, polygonArray[i].y, polygonArray[i+1].x, polygonArray[i+1].y);
-            //cout << "render x: " << polygonArray[i].x << " y: " << polygonArray[i].y << " x2: " << polygonArray[i+1].x << " y2: " << polygonArray[i+1].y << "\n";
-        }
+        firstPoint.x = center.x + (polygonTri.direction.x * polygonTri.radius);
+        firstPoint.y = center.y + (polygonTri.direction.y * polygonTri.radius);
+
+        //Now apply 45 degree rotation of the direction
+        //Normalize the vector
+        float vecLength = sqrt(
+                (polygonTri.direction.x * polygonTri.direction.x) +
+                (polygonTri.direction.y * polygonTri.direction.y)
+                );
+        float dirX = polygonTri.direction.x / vecLength;
+        float dirY = polygonTri.direction.y / vecLength;
+
+        //apply transformation
+        float newX = dirX * cosVal - dirY * sinVal;
+        float newY = dirX * sinVal + dirY * cosVal;
+
+        //round to 2 decimal points
+        secondDirection.x = roundf(newX * 100) / 100;
+        secondDirection.y = roundf(newY * 100) / 100;
+
+        secondPoint.x = center.x + (secondDirection.x * polygonTri.radius);
+        secondPoint.y = center.y + (secondDirection.y * polygonTri.radius);
+
+        SDL_RenderDrawLine(renderer, firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y);
     }
+
 }
 
-vect2 RotateVector(vect2 direction, int rotation)
+
+void RotateTriangleArray(Triangle *triangleArray, int rotation)
 {
-    double rad = rotation * PI / (double)180.0;
-    //Normalize the vector
-    float vecLength = sqrt(
-            (direction.x * direction.x) +
-            (direction.y * direction.y)
-            );
-    float dirX = direction.x / vecLength;
-    float dirY = direction.y / vecLength;
+    for(int i = 0; i < 8; i++)
+    { 
+        double rad = rotation * PI / (double)180.0;
+        //Normalize the vector
+        float vecLength = sqrt(
+                (triangleArray[i].direction.x * triangleArray[i].direction.x) +
+                (triangleArray[i].direction.y * triangleArray[i].direction.y)
+                );
+        float dirX = triangleArray[i].direction.x / vecLength;
+        float dirY = triangleArray[i].direction.y / vecLength;
 
-    //apply transformation
-    float newX = dirX * cos(rad) - dirY * sin(rad);
-    float newY = dirX * sin(rad) + dirY * cos(rad);
+        //apply transformation
+        float newX = dirX * cos(rad) - dirY * sin(rad);
+        float newY = dirX * sin(rad) + dirY * cos(rad);
 
-    //round to 2 decimal points
-    direction.x = roundf(newX * 100) / 100;
-    direction.y = roundf(newY * 100) / 100; 
-
-    return direction;
+        //round to 2 decimal points
+        triangleArray[i].direction.x = roundf(newX * 100) / 100;
+        triangleArray[i].direction.y = roundf(newY * 100) / 100; 
+    } 
 }
 
 bool CheckPointInCircle(SDL_Point circleCenter, int radius, SDL_Point checkPoint)
@@ -393,14 +411,14 @@ bool CheckPointInCircle(SDL_Point circleCenter, int radius, SDL_Point checkPoint
 bool TextureMouseCollisionSingle(Texture mTexture, int xPos, int yPos)
 {
 
-  if (xPos >= mTexture.mX 
-      && xPos <= (mTexture.mX + mTexture.mW) 
-      && yPos >= mTexture.mY
-      && yPos <= (mTexture.mY + mTexture.mH) 
-     )
-  {
-    return true;
-  }
+    if (xPos >= mTexture.mX 
+            && xPos <= (mTexture.mX + mTexture.mW) 
+            && yPos >= mTexture.mY
+            && yPos <= (mTexture.mY + mTexture.mH) 
+       )
+    {
+        return true;
+    }
 
-  return false;
+    return false;
 }

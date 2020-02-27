@@ -9,7 +9,8 @@ const int FPS = 60;
 //How many miliseconds per frame
 const int FrameDelay = 1000 / FPS;
 
-string GameState = "MENU";
+//string GameState = "MENU";
+string GameState = "CHILDHOOD";
 
 //Initial Loading
 SDL_Rect srcRect;
@@ -30,6 +31,8 @@ vect2 direction;
 int radius;
 
 SDL_Point polygonArray[8];
+Triangle triangleArray[8];
+
 
 int rotation = 0;
 
@@ -248,8 +251,6 @@ void gameloop()
             }
         }
     }
-    //Calculate poly points
-    GetPolygonPoints(polygonArray, center, radius, direction);
 
     //Set heart in middle of polygon
     HeartGreen.mX = center.x - (HeartGreen.mW/2);
@@ -258,14 +259,13 @@ void gameloop()
     HeartRed.mX = center.x - (HeartRed.mW/2);
     HeartRed.mY = center.y - (HeartRed.mH/2);
 
-
     RenderTexture(renderer, Title);
 
 
-    //Render circle
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-    RenderPolygon(renderer, polygonArray);
+    //Render circle
+    RenderTriangleArray(renderer, triangleArray, center);
 
     //Render Heart 
     RenderTexture(renderer, HeartGreen);
@@ -274,8 +274,17 @@ void gameloop()
     RenderTexture(renderer, GiveGuidance);
 
     //Rototate the startval
-    direction = RotateVector(direction, rotation); 
+    if(rotation > 0)
+    {
+        RotateTriangleArray(triangleArray, rotation);
+    }
 
+    Triangle testTri;
+    testTri.direction.x = 0;
+    testTri.direction.y = 1;
+    testTri.radius = 7;
+
+    //float sideLength = (testTri.radius * 2) / ( (sqrt(2) + 2) / sqrt(2));
 
     //emscripten_cancel_main_loop();
     //Set screen color back to screen defaults
@@ -312,6 +321,9 @@ int main(int argv, char **args)
     screenColor.b = 242;
     screenColor.a = 255;
 
+    // 
+    //Texture Inits
+    //
     SDL_Texture *titleTex = GetSDLTexture(renderer, window, "./res/png/title.png");
     RemoveTextureWhiteSpace(titleTex);
     Title = InitTexture(titleTex, 20, 20); 
@@ -348,6 +360,9 @@ int main(int argv, char **args)
     direction.x = 0;
     direction.y = 1;
     radius = 50;
+
+    InitTriangleArray(triangleArray, radius);
+
 #ifdef EMSCRIPTEN
     emscripten_set_main_loop(gameloop, 0, 0);
 #else
