@@ -9,8 +9,8 @@ const int FPS = 60;
 //How many miliseconds per frame
 const int FrameDelay = 1000 / FPS;
 
-//string GameState = "MENU";
-string GameState = "CHILDHOOD";
+string GameState = "MENU";
+//string GameState = "CHILDHOOD";
 
 //Initial Loading
 SDL_Rect srcRect;
@@ -104,6 +104,7 @@ void gameloop()
                                     if(radius < 200)
                                     {
                                         radius += 1;
+                                        UpdateTriangleArrayRadius(triangleArray, 1);
                                     }
                                 }
                                 else if(nextMood == "GREEN")
@@ -111,6 +112,8 @@ void gameloop()
                                     if(radius > 28)
                                     {
                                         radius -= 1;
+                                        UpdateTriangleArrayRadius(triangleArray, -1);
+
                                     }
                                 }
                             }
@@ -279,10 +282,7 @@ void gameloop()
         RotateTriangleArray(triangleArray, rotation);
     }
 
-    Triangle testTri;
-    testTri.direction.x = 0;
-    testTri.direction.y = 1;
-    testTri.radius = 7;
+
 
     //float sideLength = (testTri.radius * 2) / ( (sqrt(2) + 2) / sqrt(2));
 

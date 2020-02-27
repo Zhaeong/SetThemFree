@@ -30,6 +30,8 @@ void InitTriangleArray(Triangle *triangleArray, int radius);
 
 void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Point center);
 
+void UpdateTriangleArrayRadius(Triangle *triangleArray, int value);
+
 void RotateTriangleArray(Triangle *triangleArray, int rotation);
 
 bool CheckPointInCircle(SDL_Point circleCenter, int radius, SDL_Point checkPoint);

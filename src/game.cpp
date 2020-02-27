@@ -369,6 +369,14 @@ void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Po
 
 }
 
+void UpdateTriangleArrayRadius(Triangle *triangleArray, int value)
+{
+    for(int i = 0; i < 8; i++)
+    { 
+        triangleArray[i].radius += value;
+    } 
+}
+
 
 void RotateTriangleArray(Triangle *triangleArray, int rotation)
 {
@@ -388,8 +396,8 @@ void RotateTriangleArray(Triangle *triangleArray, int rotation)
         float newY = dirX * sin(rad) + dirY * cos(rad);
 
         //round to 2 decimal points
-        triangleArray[i].direction.x = roundf(newX * 100) / 100;
-        triangleArray[i].direction.y = roundf(newY * 100) / 100; 
+        triangleArray[i].direction.x = roundf(newX * 1000) / 1000;
+        triangleArray[i].direction.y = roundf(newY * 1000) / 1000; 
     } 
 }
 
