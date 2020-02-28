@@ -303,6 +303,7 @@ void InitTriangleArray(Triangle *triangleArray, int radius)
     for(int i = 0; i < 8; i++)
     { 
         Triangle polygonTri;
+        polygonTri.numGuildance = 0;
         polygonTri.direction.x = curDirection.x;
         polygonTri.direction.y = curDirection.y;
         polygonTri.radius = radius;
@@ -338,11 +339,13 @@ void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Po
     for(int i = 0; i < 8; i++)
     { 
         Triangle polygonTri = triangleArray[i];
+
+        int radius = polygonTri.radius + polygonTri.numGuildance;
         vect2 secondDirection;
         SDL_Point firstPoint, secondPoint;
 
-        firstPoint.x = center.x + (polygonTri.direction.x * polygonTri.radius);
-        firstPoint.y = center.y + (polygonTri.direction.y * polygonTri.radius);
+        firstPoint.x = center.x + (polygonTri.direction.x * radius);
+        firstPoint.y = center.y + (polygonTri.direction.y * radius);
 
         //Now apply 45 degree rotation of the direction
         //Normalize the vector
@@ -361,10 +364,15 @@ void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Po
         secondDirection.x = roundf(newX * 100) / 100;
         secondDirection.y = roundf(newY * 100) / 100;
 
-        secondPoint.x = center.x + (secondDirection.x * polygonTri.radius);
-        secondPoint.y = center.y + (secondDirection.y * polygonTri.radius);
+        secondPoint.x = center.x + (secondDirection.x * radius);
+        secondPoint.y = center.y + (secondDirection.y * radius);
 
         SDL_RenderDrawLine(renderer, firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y);
+
+        polygonTri.startPoint = firstPoint;
+        polygonTri.endPoint = secondPoint;
+
+        triangleArray[i] = polygonTri;
     }
 
 }
@@ -429,4 +437,63 @@ bool TextureMouseCollisionSingle(Texture mTexture, int xPos, int yPos)
     }
 
     return false;
+}
+
+bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY)
+{
+    bool isCollided = false;
+
+    int iCollided = 0;
+    int nearestY = 0;
+
+    for(int i = 0; i < 8; i++)
+    { 
+        Triangle polygonTri = triangleArray[i];
+
+        //find leftmost point
+        int leftX  = polygonTri.startPoint.x;
+        int rightX = polygonTri.endPoint.x;
+        if(polygonTri.endPoint.x < leftX)
+        {
+            leftX = polygonTri.endPoint.x;
+            rightX = polygonTri.startPoint.x;
+        }
+
+        //check x collision
+        if(guidanceX > leftX && guidanceX < rightX)
+        {
+            //check y collision
+            if(guidanceY < polygonTri.startPoint.y)
+            {
+                isCollided = true;
+
+                if(polygonTri.endPoint.y > nearestY)
+                {
+                    nearestY = polygonTri.endPoint.y;
+                    iCollided = i;
+                }
+            }
+            if(guidanceY < polygonTri.endPoint.y)
+            {
+                isCollided = true;
+
+                if(polygonTri.startPoint.y > nearestY)
+                {
+                    nearestY = polygonTri.startPoint.y;
+                    iCollided = i;
+                }
+            }
+        }
+
+    } 
+
+    if(isCollided)
+    {
+        triangleArray[iCollided].numGuildance += 4;
+
+        cout << "Collided: " << iCollided << "\n";
+    }
+
+    return isCollided;
+
 }

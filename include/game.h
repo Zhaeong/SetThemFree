@@ -38,6 +38,7 @@ bool CheckPointInCircle(SDL_Point circleCenter, int radius, SDL_Point checkPoint
 
 bool TextureMouseCollisionSingle(Texture mTexture, int xPos, int yPos);
 
+bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY);
 
 #endif // GAME_H
  

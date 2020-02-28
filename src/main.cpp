@@ -162,7 +162,7 @@ void gameloop()
 
             //Set Childhood state to 30s
             stateBeginTime = SDL_GetTicks() - gameStartTime;
-            nextStateTime = gameStartTime + (30 * 1000);
+            nextStateTime = gameStartTime + (5 * 1000);
             cout << "GreenTime: " << greenTime << " RedTime: " << redTime << "\n"; 
         }
     }
@@ -189,7 +189,8 @@ void gameloop()
             Guidance.mY -= 1;
         }
 
-        if(Guidance.mY < (center.y + radius))
+        //Pass in guildance midpoint
+        if(CheckGuidancePolygonCollision(triangleArray, Guidance.mX + (Guidance.mW/2), Guidance.mY))
         {
             Guidance.mY = GiveGuidance.mY;
             guidanceState = "MINE";
