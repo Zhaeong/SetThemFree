@@ -190,7 +190,7 @@ void gameloop()
         }
 
         //Pass in guildance midpoint
-        if(CheckGuidancePolygonCollision(triangleArray, Guidance.mX + (Guidance.mW/2), Guidance.mY))
+        if(CheckGuidancePolygonCollision(triangleArray, Guidance.mX ,Guidance.mY, Guidance.mW))
         {
             Guidance.mY = GiveGuidance.mY;
             guidanceState = "MINE";

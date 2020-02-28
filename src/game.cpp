@@ -344,8 +344,7 @@ void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Po
         vect2 secondDirection;
         SDL_Point firstPoint, secondPoint;
 
-        firstPoint.x = center.x + (polygonTri.direction.x * radius);
-        firstPoint.y = center.y + (polygonTri.direction.y * radius);
+
 
         //Now apply 45 degree rotation of the direction
         //Normalize the vector
@@ -364,6 +363,9 @@ void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Po
         secondDirection.x = roundf(newX * 100) / 100;
         secondDirection.y = roundf(newY * 100) / 100;
 
+        firstPoint.x = center.x + (polygonTri.direction.x * radius);
+        firstPoint.y = center.y + (polygonTri.direction.y * radius);
+
         secondPoint.x = center.x + (secondDirection.x * radius);
         secondPoint.y = center.y + (secondDirection.y * radius);
 
@@ -373,6 +375,19 @@ void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Po
         polygonTri.endPoint = secondPoint;
 
         triangleArray[i] = polygonTri;
+
+        //Now render all the lines before in multiples of 4
+        for(int j = 0; j < polygonTri.numGuildance; j += 4)
+        {
+            radius -= 4;
+            firstPoint.x = center.x + (polygonTri.direction.x * radius);
+            firstPoint.y = center.y + (polygonTri.direction.y * radius);
+
+            secondPoint.x = center.x + (secondDirection.x * radius);
+            secondPoint.y = center.y + (secondDirection.y * radius);
+
+            SDL_RenderDrawLine(renderer, firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y);
+        }
     }
 
 }
@@ -439,7 +454,7 @@ bool TextureMouseCollisionSingle(Texture mTexture, int xPos, int yPos)
     return false;
 }
 
-bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY)
+bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY, int guidanceW)
 {
     bool isCollided = false;
 
@@ -460,7 +475,7 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
         }
 
         //check x collision
-        if(guidanceX > leftX && guidanceX < rightX)
+        if(rightX >= guidanceX && (guidanceX + guidanceW) >= leftX)
         {
             //check y collision
             if(guidanceY < polygonTri.startPoint.y)
@@ -490,8 +505,6 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
     if(isCollided)
     {
         triangleArray[iCollided].numGuildance += 4;
-
-        cout << "Collided: " << iCollided << "\n";
     }
 
     return isCollided;
