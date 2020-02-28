@@ -163,7 +163,10 @@ void gameloop()
             //Set Childhood state to 30s
             stateBeginTime = SDL_GetTicks() - gameStartTime;
             nextStateTime = gameStartTime + (5 * 1000);
-            guidanceSpeed = radius / 20;
+
+            //Set guidanceSpeed to be faster when the polygon is smaller
+            guidanceSpeed = (200 - radius) / 10 + 1;
+            
             cout << "GreenTime: " << greenTime << " RedTime: " << redTime << "\n"; 
             cout << "Guidance speed: " << guidanceSpeed << "\n";
         }
@@ -188,7 +191,7 @@ void gameloop()
         rotation = 1;
         if(guidanceState == "GIVING")
         {
-            Guidance.mY -= 1;
+            Guidance.mY -= guidanceSpeed;
         }
 
         //Pass in guildance midpoint

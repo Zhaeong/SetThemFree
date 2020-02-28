@@ -504,7 +504,10 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
 
     if(isCollided)
     {
-        triangleArray[iCollided].numGuildance += 4;
+        if(numGuildance + triangleArray[iCollided].radius < 220)
+        {
+            triangleArray[iCollided].numGuildance += 4;
+        }
     }
 
     return isCollided;

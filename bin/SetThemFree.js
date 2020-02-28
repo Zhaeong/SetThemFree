@@ -195,7 +195,7 @@ Module['FS_createPath']('/res', 'png', true, true);
     }
   
    }
-   loadPackage({"files": [{"filename": "/res/png/giveGuidance.png", "start": 0, "end": 240, "audio": 0}, {"filename": "/res/png/guidance.png", "start": 240, "end": 432, "audio": 0}, {"filename": "/res/png/heartGreen.png", "start": 432, "end": 832, "audio": 0}, {"filename": "/res/png/heartRed.png", "start": 832, "end": 1245, "audio": 0}, {"filename": "/res/png/title.png", "start": 1245, "end": 4004, "audio": 0}, {"filename": "/res/png/titleProto.png", "start": 4004, "end": 6162, "audio": 0}], "remote_package_size": 6162, "package_uuid": "0ab08355-45c8-4a70-8811-8fd8f4ce95cb"});
+   loadPackage({"files": [{"filename": "/res/png/giveGuidance.png", "start": 0, "end": 240, "audio": 0}, {"filename": "/res/png/guidance.png", "start": 240, "end": 432, "audio": 0}, {"filename": "/res/png/heartGreen.png", "start": 432, "end": 832, "audio": 0}, {"filename": "/res/png/heartRed.png", "start": 832, "end": 1245, "audio": 0}, {"filename": "/res/png/title.png", "start": 1245, "end": 4004, "audio": 0}, {"filename": "/res/png/titleProto.png", "start": 4004, "end": 6162, "audio": 0}], "remote_package_size": 6162, "package_uuid": "7acdbfc0-df12-4a1f-8623-2a2c7b7d44d9"});
   
   })();
   
