@@ -46,7 +46,7 @@ Uint32 moodTransitionTime;
 
 //Childhood vars
 string guidanceState = "MINE";
-
+int guidanceSpeed;
 
 void gameloop() 
 {
@@ -163,7 +163,9 @@ void gameloop()
             //Set Childhood state to 30s
             stateBeginTime = SDL_GetTicks() - gameStartTime;
             nextStateTime = gameStartTime + (5 * 1000);
+            guidanceSpeed = radius / 20;
             cout << "GreenTime: " << greenTime << " RedTime: " << redTime << "\n"; 
+            cout << "Guidance speed: " << guidanceSpeed << "\n";
         }
     }
     else if(GameState == "TODDLER")
