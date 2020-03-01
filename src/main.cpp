@@ -224,6 +224,7 @@ void gameloop()
             Guidance.mY -= guidanceSpeed;
             if(Guidance.mY < 0)
             {
+                Guidance.mY = GiveGuidance.mY;
                 guidanceState = "MINE";
             }
         }
