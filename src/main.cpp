@@ -22,7 +22,7 @@ Texture HeartGreen;
 Texture HeartRed;
 Texture GiveGuidance;
 Texture Guidance;
-
+Texture Challenge;
 SDL_Color screenColor;
 
 SDL_Point center;
@@ -48,9 +48,14 @@ Uint32 moodTransitionTime;
 string guidanceState = "MINE";
 int guidanceSpeed;
 
-//Teen cars
+//Teen vars
 bool moveLeft = true;
 int moveLeftBound, moveRightBound;
+
+//Adults vars
+SDL_Point topPoint;
+string movement = "TOP";
+
 void gameloop() 
 {
     Uint32 frameStart;
@@ -185,6 +190,7 @@ void gameloop()
             Guidance.mAlpha = 255;
             GiveGuidance.mAlpha = 255;
             stateBeginTime = SDL_GetTicks() - gameStartTime;
+            //Transition to Teen
             nextStateTime = nextStateTime + (5 * 1000);
 
             cout << "State Childhood, gameStartTime: " << gameStartTime << " nextStateTime: " << nextStateTime << "\n";
@@ -198,9 +204,10 @@ void gameloop()
         {
             Guidance.mY -= guidanceSpeed;
         }
+        int maxGuidance = 0;
 
         //Pass in guildance midpoint
-        if(CheckGuidancePolygonCollision(triangleArray, Guidance.mX ,Guidance.mY, Guidance.mW))
+        if(CheckGuidancePolygonCollision(triangleArray, Guidance.mX ,Guidance.mY, Guidance.mW, &maxGuidance))
         {
             Guidance.mY = GiveGuidance.mY;
             guidanceState = "MINE";
@@ -214,6 +221,9 @@ void gameloop()
             screenColor.b = 174;
             moveLeftBound = 10;
             moveRightBound = GAMEWIDTH - 10;
+
+            //Transition to adulthood
+            nextStateTime = nextStateTime + (5 * 1000);
         }
     }
     else if(GameState == "TEEN")
@@ -228,9 +238,10 @@ void gameloop()
                 guidanceState = "MINE";
             }
         }
+        int maxGuidance = 0;
 
         //Pass in guildance midpoint
-        if(CheckGuidancePolygonCollision(triangleArray, Guidance.mX ,Guidance.mY, Guidance.mW))
+        if(CheckGuidancePolygonCollision(triangleArray, Guidance.mX ,Guidance.mY, Guidance.mW, &maxGuidance))
         {
             Guidance.mY = GiveGuidance.mY;
             guidanceState = "MINE";
@@ -239,18 +250,19 @@ void gameloop()
         //Move the polygon from side to side
         if(moveLeft)
         {
-            if(center.x - radius > moveLeftBound)
+            if(center.x - (radius + maxGuidance) > moveLeftBound)
             {
                 center.x -= 1;
             }
             else
             {
                 moveLeft = false;
+                cout << "max all: " << maxGuidance << "\n";
             }
         }
         else
         {
-            if(center.x + radius < moveRightBound)
+            if(center.x + (radius + maxGuidance) < moveRightBound)
             {
                 center.x += 1;
             }
@@ -260,6 +272,55 @@ void gameloop()
             }
 
         }
+
+        if(frameStart > nextStateTime)
+        {
+            GameState = "ADULT";
+            screenColor.r = 0;
+            screenColor.g = 40; 
+            screenColor.b = 81;
+            Guidance.mAlpha = 0;
+            GiveGuidance.mAlpha = 0;
+            Challenge.mAlpha = 255;
+
+            topPoint.x = GAMEWIDTH/2;
+            topPoint.y = GAMEHEIGHT/2 - 80;
+        }
+    }
+    if(GameState == "ADULT")
+    {
+        //Move towards top
+        if(movement == "TOP")
+        {
+            if(center.x != topPoint.x)
+            {
+                if(center.x > topPoint.x)
+                {
+                    center.x -= 1;
+                }
+                else
+                {
+                    center.x += 1;
+                }
+            }
+
+            if(center.y != topPoint.y)
+            {
+                center.y -= 1;    
+            }
+
+            if(center.y == topPoint.y && center.x == topPoint.x)
+            {
+                movement = "FLY";
+                cout << "Spread your wings\n";
+            }
+        }
+        else if(movement == "FLY")
+        {
+            Challenge.mY += 1;
+        }
+
+
     }
 
     //Mood changing calculations
@@ -317,6 +378,12 @@ void gameloop()
                 }
             }
         }
+    }
+    if(GameState == "ADULT")
+    {
+        //Render challenges
+        RenderTexture(renderer, Challenge);
+        cout << "challenge y:" << Challenge.mY << "\n";
     }
 
     //Set heart in middle of polygon
@@ -417,6 +484,10 @@ int main(int argv, char **args)
     Guidance.mX = GAMEWIDTH/2 - (Guidance.mW/2);
     //Same as previous
     Guidance.mY = GAMEHEIGHT - GiveGuidance.mH;
+
+    SDL_Texture *challengeTex = GetSDLTexture(renderer, window, "./res/png/challenge.png");
+    RemoveTextureWhiteSpace(challengeTex);
+    Challenge = InitTexture(challengeTex, 0, -50); 
 
     center.x = 250;
     center.y = 250;
