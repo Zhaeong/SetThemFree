@@ -303,7 +303,7 @@ void InitTriangleArray(Triangle *triangleArray, int radius)
     for(int i = 0; i < 8; i++)
     { 
         Triangle polygonTri;
-        polygonTri.numGuildance = 0;
+        polygonTri.numGuidance = 0;
         polygonTri.direction.x = curDirection.x;
         polygonTri.direction.y = curDirection.y;
         polygonTri.radius = radius;
@@ -340,7 +340,7 @@ void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Po
     { 
         Triangle polygonTri = triangleArray[i];
 
-        int radius = polygonTri.radius + polygonTri.numGuildance;
+        int radius = polygonTri.radius + polygonTri.numGuidance;
         vect2 secondDirection;
         SDL_Point firstPoint, secondPoint;
 
@@ -377,7 +377,7 @@ void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Po
         triangleArray[i] = polygonTri;
 
         //Now render all the lines before in multiples of 4
-        for(int j = 0; j < polygonTri.numGuildance; j += 4)
+        for(int j = 0; j < polygonTri.numGuidance; j += 4)
         {
             radius -= 4;
             firstPoint.x = center.x + (polygonTri.direction.x * radius);
@@ -504,9 +504,10 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
 
     if(isCollided)
     {
-        if(numGuildance + triangleArray[iCollided].radius < 220)
+        if(triangleArray[iCollided].numGuidance + triangleArray[iCollided].radius < 150)
         {
-            triangleArray[iCollided].numGuildance += 4;
+            triangleArray[iCollided].numGuidance += 4;
+            cout << "Total Radius: " << triangleArray[iCollided].numGuidance + triangleArray[iCollided].radius << "\n";
         }
     }
 

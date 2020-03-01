@@ -48,6 +48,9 @@ Uint32 moodTransitionTime;
 string guidanceState = "MINE";
 int guidanceSpeed;
 
+//Teen cars
+bool moveLeft = true;
+int moveLeftBound, moveRightBound;
 void gameloop() 
 {
     Uint32 frameStart;
@@ -121,7 +124,7 @@ void gameloop()
 
                     }
 
-                    if(GameState == "CHILDHOOD")
+                    if(GameState == "CHILDHOOD" || GameState == "TEEN")
                     {
                         cout << "mouse x: " << mousePoint.x << " mouse y: " << mousePoint.y << "\n";
                         cout << "tex x: " << GiveGuidance.mX << " y: " << GiveGuidance.mY << " w: " << GiveGuidance.mW << " h: " << GiveGuidance.mH << "\n";
@@ -166,7 +169,7 @@ void gameloop()
 
             //Set guidanceSpeed to be faster when the polygon is smaller
             guidanceSpeed = (200 - radius) / 10 + 1;
-            
+
             cout << "GreenTime: " << greenTime << " RedTime: " << redTime << "\n"; 
             cout << "Guidance speed: " << guidanceSpeed << "\n";
         }
@@ -182,6 +185,8 @@ void gameloop()
             Guidance.mAlpha = 255;
             GiveGuidance.mAlpha = 255;
             stateBeginTime = SDL_GetTicks() - gameStartTime;
+            nextStateTime = nextStateTime + (5 * 1000);
+
             cout << "State Childhood, gameStartTime: " << gameStartTime << " nextStateTime: " << nextStateTime << "\n";
         }
 
@@ -199,6 +204,60 @@ void gameloop()
         {
             Guidance.mY = GiveGuidance.mY;
             guidanceState = "MINE";
+        }
+
+        if(frameStart > nextStateTime)
+        {
+            GameState = "TEEN";
+            screenColor.r = 0;
+            screenColor.g = 122; 
+            screenColor.b = 174;
+            moveLeftBound = 10;
+            moveRightBound = GAMEWIDTH - 10;
+        }
+    }
+    else if(GameState == "TEEN")
+    {
+        rotation = 2;
+        if(guidanceState == "GIVING")
+        {
+            Guidance.mY -= guidanceSpeed;
+            if(Guidance.mY < 0)
+            {
+                guidanceState = "MINE";
+            }
+        }
+
+        //Pass in guildance midpoint
+        if(CheckGuidancePolygonCollision(triangleArray, Guidance.mX ,Guidance.mY, Guidance.mW))
+        {
+            Guidance.mY = GiveGuidance.mY;
+            guidanceState = "MINE";
+        }
+
+        //Move the polygon from side to side
+        if(moveLeft)
+        {
+            if(center.x - radius > moveLeftBound)
+            {
+                center.x -= 1;
+            }
+            else
+            {
+                moveLeft = false;
+            }
+        }
+        else
+        {
+            if(center.x + radius < moveRightBound)
+            {
+                center.x += 1;
+            }
+            else
+            {
+                moveLeft = true;
+            }
+
         }
     }
 

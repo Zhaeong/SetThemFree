@@ -42,7 +42,7 @@ struct Triangle
 {
     vect2 direction;
     int radius;
-    int numGuildance;
+    int numGuidance;
     SDL_Point startPoint;
     SDL_Point endPoint;
 };
