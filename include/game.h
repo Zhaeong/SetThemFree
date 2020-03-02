@@ -40,5 +40,11 @@ bool TextureMouseCollisionSingle(Texture mTexture, int xPos, int yPos);
 
 bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY, int guidanceW, int *maxGuidance);
 
+void InitChallengeTexture(SDL_Texture *challengeTex, Texture *textureArray, int numTextures, bool isLeft);
+
+void IncrementChallengeTextures(Texture *textureArray, int numTextures, bool isLeft);
+
+void RenderTextureArray(SDL_Renderer *renderer, Texture *textureArray, int numTextures);
+
 #endif // GAME_H
  

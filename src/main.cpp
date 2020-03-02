@@ -22,7 +22,6 @@ Texture HeartGreen;
 Texture HeartRed;
 Texture GiveGuidance;
 Texture Guidance;
-Texture Challenge;
 SDL_Color screenColor;
 
 SDL_Point center;
@@ -55,6 +54,10 @@ int moveLeftBound, moveRightBound;
 //Adults vars
 SDL_Point topPoint;
 string movement = "TOP";
+
+Texture LeftChallenge[10];
+Texture RightChallenge[10];
+SDL_Texture *challengeTex;
 
 void gameloop() 
 {
@@ -281,10 +284,13 @@ void gameloop()
             screenColor.b = 81;
             Guidance.mAlpha = 0;
             GiveGuidance.mAlpha = 0;
-            Challenge.mAlpha = 255;
 
             topPoint.x = GAMEWIDTH/2;
             topPoint.y = GAMEHEIGHT/2 - 80;
+
+            InitChallengeTexture(challengeTex, LeftChallenge, 10, true);
+            InitChallengeTexture(challengeTex, RightChallenge, 10, false);
+
         }
     }
     if(GameState == "ADULT")
@@ -315,10 +321,11 @@ void gameloop()
                 cout << "Spread your wings\n";
             }
         }
-        else if(movement == "FLY")
-        {
-            Challenge.mY += 1;
-        }
+        //else if(movement == "FLY")
+        //{
+            IncrementChallengeTextures(LeftChallenge, 10, true);
+            IncrementChallengeTextures(RightChallenge, 10, false);
+        //}
 
 
     }
@@ -382,8 +389,8 @@ void gameloop()
     if(GameState == "ADULT")
     {
         //Render challenges
-        RenderTexture(renderer, Challenge);
-        cout << "challenge y:" << Challenge.mY << "\n";
+        RenderTextureArray(renderer, LeftChallenge, 10); 
+        RenderTextureArray(renderer, RightChallenge, 10); 
     }
 
     //Set heart in middle of polygon
@@ -485,9 +492,9 @@ int main(int argv, char **args)
     //Same as previous
     Guidance.mY = GAMEHEIGHT - GiveGuidance.mH;
 
-    SDL_Texture *challengeTex = GetSDLTexture(renderer, window, "./res/png/challenge.png");
+    challengeTex = GetSDLTexture(renderer, window, "./res/png/challenge.png");
     RemoveTextureWhiteSpace(challengeTex);
-    Challenge = InitTexture(challengeTex, 0, -50); 
+    
 
     center.x = 250;
     center.y = 250;

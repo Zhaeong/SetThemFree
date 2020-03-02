@@ -520,3 +520,60 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
     return isCollided;
 
 }
+
+
+void InitChallengeTexture(SDL_Texture *challengeTex, Texture *textureArray, int numTextures, bool isLeft)
+{
+    int yVal = -50 * numTextures;
+    for(int i = 0; i < numTextures; i++)
+    {
+        Texture Challenge = InitTexture(challengeTex, 0, yVal); 
+        //Randomize width
+        int WidthVal = rand() % 50 + 5;
+        int xVal = 0;
+        if(!isLeft)
+        {
+            xVal = GAMEWIDTH - WidthVal;
+        }
+
+        Challenge.mW = WidthVal;
+        Challenge.mX = xVal;
+        textureArray[i] = Challenge;
+        yVal += 50;
+    }
+}
+
+
+void IncrementChallengeTextures(Texture *textureArray, int numTextures, bool isLeft)
+{
+
+    for(int i = 0; i < numTextures; i++)
+    {
+        if(textureArray[i].mY >= GAMEHEIGHT)
+        {
+            int newWidth = rand() % 60 + 10;
+            textureArray[i].mW = newWidth;
+            textureArray[i].mY = -50;
+
+            if(!isLeft)
+            {
+                textureArray[i].mX = GAMEWIDTH - newWidth;
+            }
+        }
+        else
+        {
+            textureArray[i].mY += 1;
+        }
+    }
+
+}
+
+
+void RenderTextureArray(SDL_Renderer *renderer, Texture *textureArray, int numTextures)
+{
+    for(int i = 0; i < numTextures; i++)
+    {
+        RenderTexture(renderer, textureArray[i]);
+    }
+
+}
