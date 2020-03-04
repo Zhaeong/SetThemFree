@@ -44,6 +44,8 @@ void InitChallengeTexture(SDL_Texture *challengeTex, Texture *textureArray, int 
 
 void IncrementChallengeTextures(Texture *textureArray, int numTextures, bool isLeft);
 
+string CheckChallengePolygonCollision(Texture *challengeArray, Triangle *triangleArray);
+
 void RenderTextureArray(SDL_Renderer *renderer, Texture *textureArray, int numTextures);
 
 #endif // GAME_H

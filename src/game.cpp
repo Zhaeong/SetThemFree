@@ -505,7 +505,6 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
                 }
             }
         }
-
     } 
 
     if(isCollided)
@@ -529,7 +528,7 @@ void InitChallengeTexture(SDL_Texture *challengeTex, Texture *textureArray, int 
     {
         Texture Challenge = InitTexture(challengeTex, 0, yVal); 
         //Randomize width
-        int WidthVal = rand() % 50 + 5;
+        int WidthVal = rand() % 50 + 10;
         int xVal = 0;
         if(!isLeft)
         {
@@ -568,6 +567,78 @@ void IncrementChallengeTextures(Texture *textureArray, int numTextures, bool isL
 
 }
 
+string CheckChallengePolygonCollision(Texture *challengeArray, Triangle *triangleArray)
+{
+    //Go through every triangle and see if any of them collides with challenge
+    for(int i = 0; i < 8; i++)
+    { 
+        Triangle polygonTri = triangleArray[i];
+        //find leftmost point
+
+        int leftX = polygonTri.startPoint.x;
+        int leftY = polygonTri.startPoint.y;
+
+        int rightX = polygonTri.endPoint.x;
+        int rightY = polygonTri.endPoint.y;
+
+        if(polygonTri.endPoint.x < leftX)
+        {
+            leftX = polygonTri.endPoint.x;
+            leftY = polygonTri.endPoint.y;
+            rightX = polygonTri.startPoint.x;
+            rightY = polygonTri.startPoint.y;
+        }
+
+
+        int gCollision = -1;
+        for(int c_i = 0; c_i < 10; c_i++)
+        {
+            Texture guildance = challengeArray[c_i];
+
+            //Check x collision
+            if(rightX >= guildance.mX && (guildance.mX + guildance.mW) >= leftX)
+            {
+                //Check y collision
+                if(rightY >= guildance.mY && (guildance.mY + guildance.mH) >= leftY)
+                {
+                    gCollision = c_i;
+                }
+            }
+        }
+        if(gCollision != -1)
+        {
+            if(polygonTri.numGuidance >= 4)
+            {
+                polygonTri.numGuidance -= 4;
+                triangleArray[i] = polygonTri;
+            }
+            else
+            {
+                //decrement radius of all triangles
+                for(int t_i = 0; t_i < 8; t_i++)
+                {
+                    if(triangleArray[t_i].radius > 25)
+                    {
+                        if(triangleArray[t_i].radius - 4 < 24)
+                        {
+                            triangleArray[t_i].radius = 24;
+                        }
+                        triangleArray[t_i].radius -= 4;
+                        cout << "radius: " << triangleArray[t_i].radius << "\n";
+                    }
+                    else
+                    {
+                        cout << "RIP\n";
+                        return "RIP";
+                    }
+                }
+            }
+            return "COL";
+        }
+    }
+
+    return "NO";
+}
 
 void RenderTextureArray(SDL_Renderer *renderer, Texture *textureArray, int numTextures)
 {

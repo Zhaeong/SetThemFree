@@ -52,7 +52,8 @@ bool moveLeft = true;
 int moveLeftBound, moveRightBound;
 
 //Adults vars
-SDL_Point topPoint;
+bool startChallenge = true;
+SDL_Point topPoint, botPoint;
 string movement = "TOP";
 
 Texture LeftChallenge[10];
@@ -288,6 +289,8 @@ void gameloop()
             topPoint.x = GAMEWIDTH/2;
             topPoint.y = GAMEHEIGHT/2 - 80;
 
+            botPoint.x = GAMEWIDTH/2;
+            botPoint.y = GAMEHEIGHT/2 + 80;
             InitChallengeTexture(challengeTex, LeftChallenge, 10, true);
             InitChallengeTexture(challengeTex, RightChallenge, 10, false);
 
@@ -317,15 +320,63 @@ void gameloop()
 
             if(center.y == topPoint.y && center.x == topPoint.x)
             {
+                movement = "BOT";
+            }
+        }
+        else if(movement == "BOT")
+        {
+            if(center.y != botPoint.y)
+            {
+                center.y += 1;    
+            }
+
+            if(center.y == botPoint.y)
+            {
                 movement = "FLY";
                 cout << "Spread your wings\n";
             }
+
         }
-        //else if(movement == "FLY")
-        //{
+        else if(movement == "FLY")
+        {
+            if(moveLeft)
+            {
+                string retVal = CheckChallengePolygonCollision(LeftChallenge, triangleArray); 
+                if(retVal == "COL")
+                {
+                    moveLeft = false;
+                }
+                else if(retVal == "NO")
+                {
+                    center.x -= 1;
+                }
+                else if(retVal == "RIP")
+                {
+                    startChallenge = false;
+                }
+            }
+            else
+            { 
+                string retVal = CheckChallengePolygonCollision(RightChallenge, triangleArray); 
+                if(retVal == "COL")
+                {
+                    moveLeft = true;
+                }
+                else if(retVal == "NO")
+                {
+                    center.x += 1;
+                }
+                else if(retVal == "RIP")
+                {
+                    startChallenge = false;
+                }
+            }
+        }
+        if(startChallenge)
+        {
             IncrementChallengeTextures(LeftChallenge, 10, true);
             IncrementChallengeTextures(RightChallenge, 10, false);
-        //}
+        }
 
 
     }
@@ -406,7 +457,10 @@ void gameloop()
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     //Render circle
-    RenderTriangleArray(renderer, triangleArray, center);
+    if(startChallenge)
+    {
+        RenderTriangleArray(renderer, triangleArray, center);
+    }
 
     //Render Heart 
     RenderTexture(renderer, HeartGreen);
@@ -415,7 +469,7 @@ void gameloop()
     RenderTexture(renderer, GiveGuidance);
 
     //Rototate the startval
-    if(rotation > 0)
+    if(rotation > 0 && startChallenge)
     {
         RotateTriangleArray(triangleArray, rotation);
     }
@@ -494,7 +548,7 @@ int main(int argv, char **args)
 
     challengeTex = GetSDLTexture(renderer, window, "./res/png/challenge.png");
     RemoveTextureWhiteSpace(challengeTex);
-    
+
 
     center.x = 250;
     center.y = 250;
