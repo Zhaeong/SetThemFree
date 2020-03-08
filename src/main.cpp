@@ -43,6 +43,8 @@ string Mood = "GREEN";
 string nextMood;
 Uint32 moodTransitionTime;
 
+int childTime = 30;
+
 //Childhood vars
 string guidanceState = "MINE";
 int guidanceSpeed;
@@ -59,6 +61,14 @@ string movement = "TOP";
 Texture LeftChallenge[10];
 Texture RightChallenge[10];
 SDL_Texture *challengeTex;
+
+//Music
+Mix_Chunk *ToddlerMus;
+Mix_Music *ChildMus;
+Mix_Music *TeenMus;
+Mix_Music *AdultMus;
+
+
 
 void gameloop() 
 {
@@ -102,7 +112,7 @@ void gameloop()
                         if(GameState == "MENU")
                         {
                             GameState = "FADETITLE";
-
+                            Mix_PlayChannel(-1, ToddlerMus, 0);
                         }
                         else if(GameState == "TODDLER")
                         {
@@ -174,7 +184,7 @@ void gameloop()
 
             //Set Childhood state to 30s
             stateBeginTime = SDL_GetTicks() - gameStartTime;
-            nextStateTime = gameStartTime + (5 * 1000);
+            nextStateTime = gameStartTime + (childTime * 1000);
 
             //Set guidanceSpeed to be faster when the polygon is smaller
             guidanceSpeed = (200 - radius) / 10 + 1;
@@ -548,6 +558,14 @@ int main(int argv, char **args)
 
     challengeTex = GetSDLTexture(renderer, window, "./res/png/challenge.png");
     RemoveTextureWhiteSpace(challengeTex);
+
+    //Music Inits
+
+    ToddlerMus = Mix_LoadWAV("./res/music/toddler.wav");
+    if (ToddlerMus == NULL)
+    {
+        printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
+    }
 
 
     center.x = 250;

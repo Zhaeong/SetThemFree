@@ -20,7 +20,8 @@ CC = em++
 
 CFLAGS = -Wshadow -Wall 
 #-std=c++11
-LINKERS =-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' --preload-file res --profiling 
+LINKERS =-s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='["png"]' --preload-file res --profiling -s ALLOW_MEMORY_GROWTH=1 
+
 
 SRCDIR = src
 OBJDIR = obj
