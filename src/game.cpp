@@ -17,16 +17,16 @@ int StartSDL(SDL_Window **window, SDL_Renderer **renderer)
                 "Couldn't initialize SDL: %s",
                 SDL_GetError());
     }
-//#ifdef EMSCRIPTEN
+    //#ifdef EMSCRIPTEN
     // Note: this requires a patched SDL_mixer currently
-//    Mix_OpenAudioDevice(NULL, 0, 44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
-//#else
+    //    Mix_OpenAudioDevice(NULL, 0, 44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
+    //#else
     //Initialize SDL_mixer
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
     {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
     }
-//#endif
+    //#endif
 
 
     //Uint32 windowType = SDL_WINDOW_FULLSCREEN;
@@ -548,6 +548,19 @@ void InitChallengeTexture(SDL_Texture *challengeTex, Texture *textureArray, int 
 }
 
 
+void InitMidChallengeTexture(SDL_Texture *challengeTex, Texture *textureArray, int numTextures)
+{
+    for(int i = 0; i < numTextures; i++)
+    {
+        int xVal= (rand() % (GAMEWIDTH - 70)) + 70;
+        int yVal = (rand() % GAMEHEIGHT) -1000;
+
+        Texture Challenge = InitTexture(challengeTex, xVal, yVal); 
+        cout << "mid x: " << xVal << " y: " << yVal << "\n";
+        textureArray[i] = Challenge;
+    }
+}
+
 void IncrementChallengeTextures(Texture *textureArray, int numTextures, bool isLeft)
 {
 
@@ -572,8 +585,33 @@ void IncrementChallengeTextures(Texture *textureArray, int numTextures, bool isL
 
 }
 
-string CheckChallengePolygonCollision(Texture *challengeArray, Triangle *triangleArray)
+void IncrementMidChallengeTextures(Texture *textureArray, int numTextures)
 {
+
+    for(int i = 0; i < numTextures; i++)
+    {
+        if(textureArray[i].mY >= GAMEHEIGHT)
+        {
+
+            int xVal= (rand() % (GAMEWIDTH - 70)) + 70;
+            int yVal = (rand() % GAMEHEIGHT) -1000;
+
+            textureArray[i].mX = xVal;
+            textureArray[i].mY = yVal;
+        }
+        else
+        {
+            textureArray[i].mY += 1;
+        }
+    }
+
+}
+
+CollisionMarker CheckChallengePolygonCollision(Texture *challengeArray, int numChallege, Triangle *triangleArray)
+{
+    CollisionMarker col;
+    col.colState = 0;
+
     //Go through every triangle and see if any of them collides with challenge
     for(int i = 0; i < 8; i++)
     { 
@@ -596,7 +634,7 @@ string CheckChallengePolygonCollision(Texture *challengeArray, Triangle *triangl
 
 
         int gCollision = -1;
-        for(int c_i = 0; c_i < 10; c_i++)
+        for(int c_i = 0; c_i < numChallege; c_i++)
         {
             Texture guildance = challengeArray[c_i];
 
@@ -607,6 +645,10 @@ string CheckChallengePolygonCollision(Texture *challengeArray, Triangle *triangl
                 if(rightY >= guildance.mY && (guildance.mY + guildance.mH) >= leftY)
                 {
                     gCollision = c_i;
+                    col.startPoint.x = leftX;
+                    col.startPoint.y = leftY;
+                    col.endPoint.x = rightX;
+                    col.endPoint.y = rightY;
                 }
             }
         }
@@ -634,15 +676,18 @@ string CheckChallengePolygonCollision(Texture *challengeArray, Triangle *triangl
                     else
                     {
                         cout << "RIP\n";
-                        return "RIP";
+                        col.colState = 2;
+                        return col;
                     }
                 }
             }
-            return "COL";
+            col.index = gCollision;
+            col.colState = 1;
+            return col;
         }
     }
 
-    return "NO";
+    return col; 
 }
 
 void RenderTextureArray(SDL_Renderer *renderer, Texture *textureArray, int numTextures)

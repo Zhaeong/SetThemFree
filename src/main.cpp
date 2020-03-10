@@ -43,7 +43,9 @@ string Mood = "GREEN";
 string nextMood;
 Uint32 moodTransitionTime;
 
-int childTime = 30;
+int childTime = 3;
+int teenTime = 3;
+int adultTime =3;
 
 //Childhood vars
 string guidanceState = "MINE";
@@ -60,7 +62,13 @@ string movement = "TOP";
 
 Texture LeftChallenge[10];
 Texture RightChallenge[10];
+Texture MidChallenge[2];
+int numMidChallenge = 3;
 SDL_Texture *challengeTex;
+
+SDL_Point startCol = {-1, -1};
+SDL_Point endCol = {-1, -1};
+
 
 //Music
 Mix_Chunk *ToddlerMus;
@@ -205,7 +213,7 @@ void gameloop()
             GiveGuidance.mAlpha = 255;
             stateBeginTime = SDL_GetTicks() - gameStartTime;
             //Transition to Teen
-            nextStateTime = nextStateTime + (5 * 1000);
+            nextStateTime = nextStateTime + (teenTime * 1000);
 
             cout << "State Childhood, gameStartTime: " << gameStartTime << " nextStateTime: " << nextStateTime << "\n";
         }
@@ -237,7 +245,7 @@ void gameloop()
             moveRightBound = GAMEWIDTH - 10;
 
             //Transition to adulthood
-            nextStateTime = nextStateTime + (5 * 1000);
+            nextStateTime = nextStateTime + (adultTime * 1000);
         }
     }
     else if(GameState == "TEEN")
@@ -303,7 +311,7 @@ void gameloop()
             botPoint.y = GAMEHEIGHT/2 + 80;
             InitChallengeTexture(challengeTex, LeftChallenge, 10, true);
             InitChallengeTexture(challengeTex, RightChallenge, 10, false);
-
+            InitMidChallengeTexture(challengeTex, MidChallenge, numMidChallenge);
         }
     }
     if(GameState == "ADULT")
@@ -349,43 +357,72 @@ void gameloop()
         }
         else if(movement == "FLY")
         {
-            if(moveLeft)
+            CollisionMarker col;
+            if(startChallenge)
             {
-                string retVal = CheckChallengePolygonCollision(LeftChallenge, triangleArray); 
-                if(retVal == "COL")
+                if(moveLeft)
                 {
-                    moveLeft = false;
+                    col = CheckChallengePolygonCollision(LeftChallenge, 10, triangleArray); 
+                    if(col.colState == 1)
+                    {
+                        moveLeft = false;
+                        startCol = col.startPoint;
+                        endCol = col.endPoint;
+                    }
+                    else if(col.colState == 0)
+                    {
+                        center.x -= 1;
+                    }
+                    else if(col.colState == 2)
+                    {
+                        startChallenge = false;
+                    }
                 }
-                else if(retVal == "NO")
+                else
+                { 
+                    col = CheckChallengePolygonCollision(RightChallenge, 10, triangleArray); 
+                    if(col.colState == 1)
+                    {
+                        moveLeft = true;
+                        startCol = col.startPoint;
+                        endCol = col.endPoint;
+                    }
+                    else if(col.colState == 0) 
+                    {
+                        center.x += 1;
+                    }
+                    else if(col.colState == 2)
+                    {
+                        startChallenge = false;
+                    }
+                }
+
+                //Also check for mid challenges
+                col = CheckChallengePolygonCollision(MidChallenge, numMidChallenge, triangleArray); 
+                if(col.colState == 1)
                 {
-                    center.x -= 1;
+                    int xVal= (rand() % (GAMEWIDTH - 70)) + 70;
+                    int yVal = (rand() % GAMEHEIGHT) -1000;
+
+                    MidChallenge[col.index].mX = xVal;
+                    MidChallenge[col.index].mY = yVal;
+
+                    startCol = col.startPoint;
+                    endCol = col.endPoint;
                 }
-                else if(retVal == "RIP")
+                else if(col.colState == 2)
                 {
                     startChallenge = false;
                 }
-            }
-            else
-            { 
-                string retVal = CheckChallengePolygonCollision(RightChallenge, triangleArray); 
-                if(retVal == "COL")
-                {
-                    moveLeft = true;
-                }
-                else if(retVal == "NO")
-                {
-                    center.x += 1;
-                }
-                else if(retVal == "RIP")
-                {
-                    startChallenge = false;
-                }
+
+
             }
         }
         if(startChallenge)
         {
             IncrementChallengeTextures(LeftChallenge, 10, true);
             IncrementChallengeTextures(RightChallenge, 10, false);
+            IncrementMidChallengeTextures(MidChallenge, numMidChallenge);
         }
 
 
@@ -452,6 +489,11 @@ void gameloop()
         //Render challenges
         RenderTextureArray(renderer, LeftChallenge, 10); 
         RenderTextureArray(renderer, RightChallenge, 10); 
+        RenderTextureArray(renderer, MidChallenge, numMidChallenge);
+
+        //Render col line
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        SDL_RenderDrawLine(renderer, startCol.x, startCol.y, endCol.x, endCol.y);
     }
 
     //Set heart in middle of polygon

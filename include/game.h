@@ -42,9 +42,13 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
 
 void InitChallengeTexture(SDL_Texture *challengeTex, Texture *textureArray, int numTextures, bool isLeft);
 
+void InitMidChallengeTexture(SDL_Texture *challengeTex, Texture *textureArray, int numTextures);
+
 void IncrementChallengeTextures(Texture *textureArray, int numTextures, bool isLeft);
 
-string CheckChallengePolygonCollision(Texture *challengeArray, Triangle *triangleArray);
+void IncrementMidChallengeTextures(Texture *textureArray, int numTextures);
+
+CollisionMarker CheckChallengePolygonCollision(Texture *challengeArray, int numChallege, Triangle *triangleArray);
 
 void RenderTextureArray(SDL_Renderer *renderer, Texture *textureArray, int numTextures);
 
