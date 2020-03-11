@@ -61,8 +61,7 @@
       <input type="checkbox" id="resize">Resize canvas
       <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
       &nbsp;&nbsp;&nbsp;
-      <input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, 
-                                                                                document.getElementById('resize').checked)">
+      <input type="button" value="Fullscreen" onclick="setFullscreen()">
     </div>
     
     <hr/>
@@ -143,7 +142,21 @@
           if (text) Module.printErr('[post-exception status] ' + text);
         };
       };
+    function setFullscreen()
+    {
+        console.log("aaaa");
+        document.getElementById("canvas").style.position="absolute";
+        document.getElementById("canvas").style.top="0px";
+        document.getElementById("canvas").style.left="0px";
+        document.getElementById("canvas").style.margin="0px";
+        document.getElementById("canvas").style.width="100%";
+        document.getElementById("canvas").style.height="100%";
+        document.getElementById("canvas").style.overflow="hidden";
+        document.getElementById("canvas").style.display="block";
+    }
     </script>
     {{{ SCRIPT }}}
+
+    
   </body>
 </html>

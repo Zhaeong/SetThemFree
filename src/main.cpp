@@ -159,18 +159,14 @@ void gameloop()
 
                     if(GameState == "CHILDHOOD" || GameState == "TEEN")
                     {
-                        cout << "mouse x: " << mousePoint.x << " mouse y: " << mousePoint.y << "\n";
-                        cout << "tex x: " << GiveGuidance.mX << " y: " << GiveGuidance.mY << " w: " << GiveGuidance.mW << " h: " << GiveGuidance.mH << "\n";
                         if(TextureMouseCollisionSingle(GiveGuidance, mousePoint.x, mousePoint.y))
                         {
-                            cout << "Gave Guidance\n";
                             if(guidanceState == "MINE")
                             {
                                 guidanceState = "GIVING";
                             }
                         }
                     }
-                    cout << "GameState: " << GameState << "\n";
                     break;
                 }
             case SDL_QUIT:
@@ -203,8 +199,6 @@ void gameloop()
             //Set guidanceSpeed to be faster when the polygon is smaller
             guidanceSpeed = 4;
 
-            cout << "GreenTime: " << greenTime << " RedTime: " << redTime << "\n"; 
-            cout << "Guidance speed: " << guidanceSpeed << "\n";
         }
     }
     else if(GameState == "TODDLER")
@@ -223,7 +217,6 @@ void gameloop()
 
             Mix_HaltChannel(-1);
             Mix_PlayChannel(-1, ChildMus, 0);
-            cout << "State Childhood, gameStartTime: " << gameStartTime << " nextStateTime: " << nextStateTime << "\n";
         }
 
     }
@@ -290,7 +283,6 @@ void gameloop()
             else
             {
                 moveLeft = false;
-                cout << "max all: " << maxGuidance << "\n";
             }
         }
         else
@@ -370,8 +362,6 @@ void gameloop()
             if(center.y == botPoint.y)
             {
                 movement = "FLY";
-                cout << "Spread your wings\n";
-
             }
 
         }
