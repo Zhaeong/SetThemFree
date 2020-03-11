@@ -556,7 +556,6 @@ void InitMidChallengeTexture(SDL_Texture *challengeTex, Texture *textureArray, i
         int yVal = (rand() % GAMEHEIGHT) -1000;
 
         Texture Challenge = InitTexture(challengeTex, xVal, yVal); 
-        cout << "mid x: " << xVal << " y: " << yVal << "\n";
         textureArray[i] = Challenge;
     }
 }

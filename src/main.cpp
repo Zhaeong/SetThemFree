@@ -43,9 +43,16 @@ string Mood = "GREEN";
 string nextMood;
 Uint32 moodTransitionTime;
 
-int childTime = 3;
-int teenTime = 3;
-int adultTime =3;
+
+int childTime = 28;
+int teenTime = 21;
+int adultTime = 25;
+
+
+//int childTime = 2;
+//int teenTime = 2;
+//int adultTime = 2;
+
 
 //Childhood vars
 string guidanceState = "MINE";
@@ -72,10 +79,9 @@ SDL_Point endCol = {-1, -1};
 
 //Music
 Mix_Chunk *ToddlerMus;
-Mix_Music *ChildMus;
-Mix_Music *TeenMus;
-Mix_Music *AdultMus;
-
+Mix_Chunk *ChildMus;
+Mix_Chunk *TeenMus;
+Mix_Chunk *AdultMus;
 
 
 void gameloop() 
@@ -195,7 +201,7 @@ void gameloop()
             nextStateTime = gameStartTime + (childTime * 1000);
 
             //Set guidanceSpeed to be faster when the polygon is smaller
-            guidanceSpeed = (200 - radius) / 10 + 1;
+            guidanceSpeed = 4;
 
             cout << "GreenTime: " << greenTime << " RedTime: " << redTime << "\n"; 
             cout << "Guidance speed: " << guidanceSpeed << "\n";
@@ -215,6 +221,8 @@ void gameloop()
             //Transition to Teen
             nextStateTime = nextStateTime + (teenTime * 1000);
 
+            Mix_HaltChannel(-1);
+            Mix_PlayChannel(-1, ChildMus, 0);
             cout << "State Childhood, gameStartTime: " << gameStartTime << " nextStateTime: " << nextStateTime << "\n";
         }
 
@@ -243,6 +251,9 @@ void gameloop()
             screenColor.b = 174;
             moveLeftBound = 10;
             moveRightBound = GAMEWIDTH - 10;
+
+            Mix_HaltChannel(-1);
+            Mix_PlayChannel(-1, TeenMus, 0);
 
             //Transition to adulthood
             nextStateTime = nextStateTime + (adultTime * 1000);
@@ -297,6 +308,7 @@ void gameloop()
 
         if(frameStart > nextStateTime)
         {
+
             GameState = "ADULT";
             screenColor.r = 0;
             screenColor.g = 40; 
@@ -309,9 +321,16 @@ void gameloop()
 
             botPoint.x = GAMEWIDTH/2;
             botPoint.y = GAMEHEIGHT/2 + 80;
+
+            Mix_HaltChannel(-1);
+            if(Mix_PlayChannel(-1, AdultMus, 0) == -1) 
+            {
+                printf("Mix_PlayChannel: %s\n",Mix_GetError());
+            }
             InitChallengeTexture(challengeTex, LeftChallenge, 10, true);
             InitChallengeTexture(challengeTex, RightChallenge, 10, false);
             InitMidChallengeTexture(challengeTex, MidChallenge, numMidChallenge);
+
         }
     }
     if(GameState == "ADULT")
@@ -352,6 +371,7 @@ void gameloop()
             {
                 movement = "FLY";
                 cout << "Spread your wings\n";
+
             }
 
         }
@@ -424,7 +444,10 @@ void gameloop()
             IncrementChallengeTextures(RightChallenge, 10, false);
             IncrementMidChallengeTextures(MidChallenge, numMidChallenge);
         }
-
+        else
+        {
+            Mix_HaltChannel(-1);
+        }
 
     }
 
@@ -513,6 +536,7 @@ void gameloop()
     {
         RenderTriangleArray(renderer, triangleArray, center);
     }
+
 
     //Render Heart 
     RenderTexture(renderer, HeartGreen);
@@ -605,6 +629,24 @@ int main(int argv, char **args)
 
     ToddlerMus = Mix_LoadWAV("./res/music/toddler.wav");
     if (ToddlerMus == NULL)
+    {
+        printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
+    }
+
+    ChildMus = Mix_LoadWAV("./res/music/child.wav");
+    if (ChildMus == NULL)
+    {
+        printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
+    }
+
+    TeenMus = Mix_LoadWAV("./res/music/teen.wav");
+    if (TeenMus == NULL)
+    {
+        printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
+    }
+
+    AdultMus = Mix_LoadWAV("./res/music/adult.ogg");
+    if (AdultMus == NULL)
     {
         printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
     }
