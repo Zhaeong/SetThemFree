@@ -459,7 +459,7 @@ bool TextureMouseCollisionSingle(Texture mTexture, int xPos, int yPos)
     return false;
 }
 
-bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY, int guidanceW, int *maxGuidance)
+bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY, int guidanceW, int *maxGuidance, bool increment)
 {
     bool isCollided = false;
 
@@ -514,10 +514,19 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
 
     if(isCollided)
     {
-        if(triangleArray[iCollided].numGuidance + triangleArray[iCollided].radius < 150)
+        if(increment)
         {
-            triangleArray[iCollided].numGuidance += 4;
-            cout << "Total Radius: " << triangleArray[iCollided].numGuidance + triangleArray[iCollided].radius << "\n";
+            if(triangleArray[iCollided].numGuidance + triangleArray[iCollided].radius < 150)
+            {
+                triangleArray[iCollided].numGuidance += 4;
+            }
+        }
+        else
+        {
+            if(triangleArray[iCollided].numGuidance >= 4)
+            {
+                triangleArray[iCollided].numGuidance -= 4;
+            }
         }
     }
     *maxGuidance = maxGuide;
@@ -670,7 +679,6 @@ CollisionMarker CheckChallengePolygonCollision(Texture *challengeArray, int numC
                             triangleArray[t_i].radius = 24;
                         }
                         triangleArray[t_i].radius -= 4;
-                        cout << "radius: " << triangleArray[t_i].radius << "\n";
                     }
                     else
                     {
