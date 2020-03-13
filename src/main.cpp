@@ -221,10 +221,14 @@ void gameloop()
     }
     else if(GameState == "CHILDHOOD")
     {
-        if(Guidance.mAlpha < 255)
+        if(GiveGuidance.mAlpha + 5 < 255)
         {
-            Guidance.mAlpha += 1;
-            GiveGuidance.mAlpha += 1;
+            GiveGuidance.mAlpha += 5;
+        }
+        else
+        {
+            GiveGuidance.mAlpha = 255;
+            Guidance.mAlpha = 255;
         }
         rotation = 1;
         if(guidanceState == "GIVING")
