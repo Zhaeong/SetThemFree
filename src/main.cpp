@@ -44,14 +44,14 @@ string nextMood;
 Uint32 moodTransitionTime;
 
 
-//int childTime = 28;
-//int teenTime = 21;
-//int adultTime = 25;
+int childTime = 28;
+int teenTime = 21;
+int adultTime = 25;
 
 
-int childTime = 2;
-int teenTime = 2;
-int adultTime = 2;
+//int childTime = 2;
+//int teenTime = 2;
+//int adultTime = 2;
 
 
 //Childhood vars
