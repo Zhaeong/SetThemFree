@@ -17,6 +17,8 @@ SDL_Rect srcRect;
 SDL_Rect dstRect;
 
 //Texture declarations
+Texture NumberFont;
+
 Texture Title;
 Texture HeartGreen;
 Texture HeartRed;
@@ -571,6 +573,9 @@ void gameloop()
         //Render circle
         RenderTriangleArray(renderer, triangleArray, center);
     }
+    
+    NumberFont.mX = center.x;
+    NumberFont.mY = center.y;
 
     //Render Heart 
     RenderTexture(renderer, HeartGreen);
@@ -578,6 +583,7 @@ void gameloop()
     RenderTexture(renderer, Guidance);
     RenderTexture(renderer, GiveGuidance);
 
+    RenderTexture(renderer, NumberFont);
     //Rototate the startval
     if(rotation > 0)
     {
@@ -625,6 +631,10 @@ int main(int argv, char **args)
     // 
     //Texture Inits
     //
+    SDL_Texture *fontTexture = GetSDLTexture(renderer, window, "./res/png/numbers.png");
+    RemoveTextureWhiteSpace(fontTexture);
+    NumberFont = InitTexture(fontTexture, 20, 20); 
+
     SDL_Texture *titleTex = GetSDLTexture(renderer, window, "./res/png/title.png");
     RemoveTextureWhiteSpace(titleTex);
     Title = InitTexture(titleTex, 20, 20); 

@@ -170,7 +170,7 @@ void RemoveTextureWhiteSpace(SDL_Texture *texture)
         //Map colors
 
         Uint32 colorKeyWhite = SDL_MapRGBA(mappingFormat, 0xFF, 0xFF, 0xFF, 0xFF);
-        Uint32 colorKeyGray = SDL_MapRGBA(mappingFormat, 153, 153, 153, 0xFF);
+        Uint32 colorKeyGray = SDL_MapRGBA(mappingFormat, 195, 195, 195, 0xFF);
 
         Uint32 transparent = SDL_MapRGBA(mappingFormat, 0xFF, 0xFF, 0xFF, 0);
 
