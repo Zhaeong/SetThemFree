@@ -17,18 +17,6 @@ int StartSDL(SDL_Window **window, SDL_Renderer **renderer)
                 "Couldn't initialize SDL: %s",
                 SDL_GetError());
     }
-    /*
-    //#ifdef EMSCRIPTEN
-    // Note: this requires a patched SDL_mixer currently
-    //    Mix_OpenAudioDevice(NULL, 0, 44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
-    //#else
-    //Initialize SDL_mixer
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-    {
-    printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-    }
-    //#endif
-     */
 
     //Uint32 windowType = SDL_WINDOW_FULLSCREEN;
     Uint32 windowType = SDL_WINDOW_RESIZABLE;
