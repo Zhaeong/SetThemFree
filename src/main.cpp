@@ -79,10 +79,13 @@ int colLineAlpha = 255;
 Uint32 score;
 
 //Music
-Mix_Chunk *ToddlerMus;
-Mix_Chunk *ChildMus;
-Mix_Chunk *TeenMus;
-Mix_Chunk *AdultMus;
+
+SDL_AudioDeviceID audioDevice;
+
+AudioClip ToddlerMus;
+AudioClip ChildMus;
+AudioClip TeenMus;
+AudioClip AdultMus;
 
 
 void gameloop() 
@@ -127,7 +130,7 @@ void gameloop()
                         if(GameState == "MENU")
                         {
                             GameState = "FADETITLE";
-                            Mix_PlayChannel(-1, ToddlerMus, 0);
+                            PlayAudio(audioDevice, ToddlerMus);
                         }
                         else if(GameState == "TODDLER")
                         {
@@ -211,8 +214,8 @@ void gameloop()
             //Transition to Teen
             nextStateTime = nextStateTime + (teenTime * 1000);
 
-            Mix_HaltChannel(-1);
-            Mix_PlayChannel(-1, ChildMus, 0);
+            SDL_ClearQueuedAudio(audioDevice);
+            PlayAudio(audioDevice, ChildMus);
         }
 
     }
@@ -252,8 +255,8 @@ void gameloop()
             moveLeftBound = 10;
             moveRightBound = GAMEWIDTH - 10;
 
-            Mix_HaltChannel(-1);
-            Mix_PlayChannel(-1, TeenMus, 0);
+            SDL_ClearQueuedAudio(audioDevice);
+            PlayAudio(audioDevice, TeenMus);
 
             //Transition to adulthood
             nextStateTime = nextStateTime + (adultTime * 1000);
@@ -326,11 +329,9 @@ void gameloop()
             botPoint.x = GAMEWIDTH/2;
             botPoint.y = GAMEHEIGHT/2 + 80;
 
-            Mix_HaltChannel(-1);
-            if(Mix_PlayChannel(-1, AdultMus, 0) == -1) 
-            {
-                printf("Mix_PlayChannel: %s\n",Mix_GetError());
-            }
+            SDL_ClearQueuedAudio(audioDevice);
+            PlayAudio(audioDevice, AdultMus);
+
             InitChallengeTexture(challengeTex, LeftChallenge, 10, true);
             InitChallengeTexture(challengeTex, RightChallenge, 10, false);
 
@@ -462,7 +463,7 @@ void gameloop()
         }
         if(movement == "END")
         {
-            Mix_HaltChannel(-1);
+            SDL_ClearQueuedAudio(audioDevice);
             score = SDL_GetTicks() - gameStartTime;
             cout << "Score: " << score << "\n";
             movement = "RESTART";
@@ -543,7 +544,7 @@ void gameloop()
         {
             colLineAlpha = 0;
         }
-        
+
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, colLineAlpha);
 
         SDL_RenderDrawLine(renderer, startCol.x, startCol.y, endCol.x, endCol.y);
@@ -655,29 +656,21 @@ int main(int argv, char **args)
 
     //Music Inits
 
-    ToddlerMus = Mix_LoadWAV("./res/music/toddler.wav");
-    if (ToddlerMus == NULL)
-    {
-        printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
-    }
+    ToddlerMus = InitAudio("./res/music/toddler.wav");
+    ChildMus = InitAudio("./res/music/child.wav");
+    TeenMus = InitAudio("./res/music/teen.wav");
+    AdultMus = InitAudio("./res/music/adult.wav");
 
-    ChildMus = Mix_LoadWAV("./res/music/child.wav");
-    if (ChildMus == NULL)
-    {
-        printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
-    }
 
-    TeenMus = Mix_LoadWAV("./res/music/teen.wav");
-    if (TeenMus == NULL)
-    {
-        printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
-    }
+    audioDevice = SDL_OpenAudioDevice(NULL, 0, &ToddlerMus.wavSpec, NULL, 0);
+    if (audioDevice == 0) {
+        printf("Failed to open audio: %s", SDL_GetError());
+    } 
 
-    AdultMus = Mix_LoadWAV("./res/music/adult.ogg");
-    if (AdultMus == NULL)
-    {
-        printf("Failed to load music! SDL_mixer Error: %s\n", Mix_GetError());
-    }
+
+
+    SDL_PauseAudioDevice(audioDevice, 0);
+
 
 
     center.x = 250;

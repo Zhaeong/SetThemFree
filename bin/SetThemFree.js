@@ -154,63 +154,63 @@ Module.expectedDataFileDownloads++;
  };
  loadPackage({
   "files": [ {
-   "filename": "/res/music/adult.ogg",
+   "filename": "/res/music/adult.wav",
    "start": 0,
-   "end": 5268240,
+   "end": 51998504,
    "audio": 1
   }, {
    "filename": "/res/music/child.wav",
-   "start": 5268240,
-   "end": 8989264,
+   "start": 51998504,
+   "end": 55719528,
    "audio": 1
   }, {
    "filename": "/res/music/teen.wav",
-   "start": 8989264,
-   "end": 13381656,
+   "start": 55719528,
+   "end": 60111920,
    "audio": 1
   }, {
    "filename": "/res/music/toddler.wav",
-   "start": 13381656,
-   "end": 18338892,
+   "start": 60111920,
+   "end": 65069156,
    "audio": 1
   }, {
    "filename": "/res/png/challenge.png",
-   "start": 18338892,
-   "end": 18339088,
+   "start": 65069156,
+   "end": 65069352,
    "audio": 0
   }, {
    "filename": "/res/png/giveGuidance.png",
-   "start": 18339088,
-   "end": 18339328,
+   "start": 65069352,
+   "end": 65069592,
    "audio": 0
   }, {
    "filename": "/res/png/guidance.png",
-   "start": 18339328,
-   "end": 18339520,
+   "start": 65069592,
+   "end": 65069784,
    "audio": 0
   }, {
    "filename": "/res/png/heartGreen.png",
-   "start": 18339520,
-   "end": 18339920,
+   "start": 65069784,
+   "end": 65070184,
    "audio": 0
   }, {
    "filename": "/res/png/heartRed.png",
-   "start": 18339920,
-   "end": 18340333,
+   "start": 65070184,
+   "end": 65070597,
    "audio": 0
   }, {
    "filename": "/res/png/title.png",
-   "start": 18340333,
-   "end": 18343092,
+   "start": 65070597,
+   "end": 65073356,
    "audio": 0
   }, {
    "filename": "/res/png/titleProto.png",
-   "start": 18343092,
-   "end": 18345250,
+   "start": 65073356,
+   "end": 65075514,
    "audio": 0
   } ],
-  "remote_package_size": 18345250,
-  "package_uuid": "b7741504-6d82-4aed-8c8e-01683329015a"
+  "remote_package_size": 65075514,
+  "package_uuid": "d4f9fa52-44e2-4ca9-bb14-84f1ab93a5fe"
  });
 })();
 
@@ -611,8 +611,8 @@ function setValue(ptr, value, type, noSafe) {
 var wasmMemory;
 
 var wasmTable = new WebAssembly.Table({
- "initial": 1066,
- "maximum": 1066 + 0,
+ "initial": 1022,
+ "maximum": 1022 + 0,
  "element": "anyfunc"
 });
 
@@ -831,7 +831,7 @@ function updateGlobalBufferAndViews(buf) {
  Module["HEAPF64"] = HEAPF64 = new Float64Array(buf);
 }
 
-var STACK_BASE = 5408176, STACK_MAX = 165296, DYNAMIC_BASE = 5408176, DYNAMICTOP_PTR = 165136;
+var STACK_BASE = 5347008, STACK_MAX = 104128, DYNAMIC_BASE = 5347008, DYNAMICTOP_PTR = 103968;
 
 assert(STACK_BASE % 16 === 0, "stack must start aligned");
 
@@ -1196,7 +1196,7 @@ var tempDouble;
 var tempI64;
 
 var ASM_CONSTS = {
- 98020: function($0, $1, $2) {
+ 36884: function($0, $1, $2) {
   var w = $0;
   var h = $1;
   var pixels = $2;
@@ -1267,7 +1267,7 @@ var ASM_CONSTS = {
   SDL2.ctx.putImageData(SDL2.image, 0, 0);
   return 0;
  },
- 99475: function($0, $1, $2, $3, $4) {
+ 38339: function($0, $1, $2, $3, $4) {
   var w = $0;
   var h = $1;
   var hot_x = $2;
@@ -1304,30 +1304,30 @@ var ASM_CONSTS = {
   stringToUTF8(url, urlBuf, url.length + 1);
   return urlBuf;
  },
- 100464: function($0) {
+ 39328: function($0) {
   if (Module["canvas"]) {
    Module["canvas"].style["cursor"] = UTF8ToString($0);
   }
   return 0;
  },
- 100557: function() {
+ 39421: function() {
   if (Module["canvas"]) {
    Module["canvas"].style["cursor"] = "none";
   }
  },
- 101782: function() {
+ 40646: function() {
   return screen.width;
  },
- 101809: function() {
+ 40673: function() {
   return screen.height;
  },
- 101882: function($0) {
+ 40746: function($0) {
   if (typeof Module["setWindowTitle"] !== "undefined") {
    Module["setWindowTitle"](UTF8ToString($0));
   }
   return 0;
  },
- 102036: function() {
+ 40900: function() {
   if (typeof AudioContext !== "undefined") {
    return 1;
   } else if (typeof webkitAudioContext !== "undefined") {
@@ -1335,7 +1335,7 @@ var ASM_CONSTS = {
   }
   return 0;
  },
- 102202: function() {
+ 41066: function() {
   if (typeof navigator.mediaDevices !== "undefined" && typeof navigator.mediaDevices.getUserMedia !== "undefined") {
    return 1;
   } else if (typeof navigator.webkitGetUserMedia !== "undefined") {
@@ -1343,7 +1343,7 @@ var ASM_CONSTS = {
   }
   return 0;
  },
- 102428: function($0) {
+ 41292: function($0) {
   if (typeof Module["SDL2"] === "undefined") {
    Module["SDL2"] = {};
   }
@@ -1362,11 +1362,11 @@ var ASM_CONSTS = {
   }
   return SDL2.audioContext === undefined ? -1 : 0;
  },
- 102911: function() {
+ 41775: function() {
   var SDL2 = Module["SDL2"];
   return SDL2.audioContext.sampleRate;
  },
- 102981: function($0, $1, $2, $3) {
+ 41845: function($0, $1, $2, $3) {
   var SDL2 = Module["SDL2"];
   var have_microphone = function(stream) {
    if (SDL2.capture.silenceTimer !== undefined) {
@@ -1407,7 +1407,7 @@ var ASM_CONSTS = {
    }, have_microphone, no_microphone);
   }
  },
- 104633: function($0, $1, $2, $3) {
+ 43497: function($0, $1, $2, $3) {
   var SDL2 = Module["SDL2"];
   SDL2.audio.scriptProcessorNode = SDL2.audioContext["createScriptProcessor"]($1, 0, $0);
   SDL2.audio.scriptProcessorNode["onaudioprocess"] = function(e) {
@@ -1419,7 +1419,7 @@ var ASM_CONSTS = {
   };
   SDL2.audio.scriptProcessorNode["connect"](SDL2.audioContext["destination"]);
  },
- 105043: function($0, $1) {
+ 43907: function($0, $1) {
   var SDL2 = Module["SDL2"];
   var numChannels = SDL2.capture.currentCaptureBuffer.numberOfChannels;
   for (var c = 0; c < numChannels; ++c) {
@@ -1438,7 +1438,7 @@ var ASM_CONSTS = {
    }
   }
  },
- 105648: function($0, $1) {
+ 44512: function($0, $1) {
   var SDL2 = Module["SDL2"];
   var numChannels = SDL2.audio.currentOutputBuffer["numberOfChannels"];
   for (var c = 0; c < numChannels; ++c) {
@@ -1451,7 +1451,7 @@ var ASM_CONSTS = {
    }
   }
  },
- 106128: function($0) {
+ 44992: function($0) {
   var SDL2 = Module["SDL2"];
   if ($0) {
    if (SDL2.capture.silenceTimer !== undefined) {
@@ -9148,16 +9148,16 @@ var _main = Module["_main"] = function() {
  return Module["asm"]["main"].apply(null, arguments);
 };
 
-var _malloc = Module["_malloc"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["malloc"].apply(null, arguments);
-};
-
 var _free = Module["_free"] = function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return Module["asm"]["free"].apply(null, arguments);
+};
+
+var _malloc = Module["_malloc"] = function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["malloc"].apply(null, arguments);
 };
 
 var _realloc = Module["_realloc"] = function() {
@@ -9304,30 +9304,6 @@ var dynCall_v = Module["dynCall_v"] = function() {
  return Module["asm"]["dynCall_v"].apply(null, arguments);
 };
 
-var dynCall_iid = Module["dynCall_iid"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_iid"].apply(null, arguments);
-};
-
-var dynCall_iiiiiiii = Module["dynCall_iiiiiiii"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_iiiiiiii"].apply(null, arguments);
-};
-
-var dynCall_jii = Module["dynCall_jii"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_jii"].apply(null, arguments);
-};
-
-var dynCall_iiji = Module["dynCall_iiji"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_iiji"].apply(null, arguments);
-};
-
 var dynCall_ji = Module["dynCall_ji"] = function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
@@ -9350,6 +9326,12 @@ var dynCall_viiiiiiiiiii = Module["dynCall_viiiiiiiiiii"] = function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return Module["asm"]["dynCall_viiiiiiiiiii"].apply(null, arguments);
+};
+
+var dynCall_iiiiiiii = Module["dynCall_iiiiiiii"] = function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_iiiiiiii"].apply(null, arguments);
 };
 
 var dynCall_iidiiii = Module["dynCall_iidiiii"] = function() {

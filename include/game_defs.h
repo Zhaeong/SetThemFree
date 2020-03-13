@@ -3,7 +3,6 @@
 
 #include <string>
 #include <SDL.h>
-#include <SDL_mixer.h>
 #include <SDL_image.h>
 
 
@@ -56,6 +55,15 @@ struct CollisionMarker
     int index;
     SDL_Point startPoint;
     SDL_Point endPoint;
+};
+
+
+struct AudioClip
+{
+    string wavPath;
+    SDL_AudioSpec wavSpec;
+    Uint32 wavLength;
+    Uint8 *wavBuffer;
 };
 /*
 static float vect2dot(vect2 v1, vect2 v2)

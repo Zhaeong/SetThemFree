@@ -17,6 +17,7 @@ int StartSDL(SDL_Window **window, SDL_Renderer **renderer)
                 "Couldn't initialize SDL: %s",
                 SDL_GetError());
     }
+    /*
     //#ifdef EMSCRIPTEN
     // Note: this requires a patched SDL_mixer currently
     //    Mix_OpenAudioDevice(NULL, 0, 44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
@@ -24,10 +25,10 @@ int StartSDL(SDL_Window **window, SDL_Renderer **renderer)
     //Initialize SDL_mixer
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
     {
-        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+    printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
     }
     //#endif
-
+     */
 
     //Uint32 windowType = SDL_WINDOW_FULLSCREEN;
     Uint32 windowType = SDL_WINDOW_RESIZABLE;
@@ -702,6 +703,29 @@ void RenderTextureArray(SDL_Renderer *renderer, Texture *textureArray, int numTe
     for(int i = 0; i < numTextures; i++)
     {
         RenderTexture(renderer, textureArray[i]);
+    }
+
+}
+
+
+AudioClip InitAudio(string filepath)
+{
+    AudioClip clip;
+    clip.wavPath = filepath;
+    if (SDL_LoadWAV(clip.wavPath.c_str(), &clip.wavSpec, &clip.wavBuffer, &clip.wavLength) == NULL) 
+    {
+        fprintf(stderr, "Could not open wav %s: %s\n", filepath.c_str(), SDL_GetError());
+    } 
+    return clip;
+}
+
+
+void PlayAudio(SDL_AudioDeviceID audioDevice, AudioClip clip)
+{
+    int success = SDL_QueueAudio(audioDevice, clip.wavBuffer, clip.wavLength);
+    if(success < 0)
+    {
+        printf("SDL_QueueAudio failed %s, err: %s", clip.wavPath.c_str(), SDL_GetError()); 
     }
 
 }

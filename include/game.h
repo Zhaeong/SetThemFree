@@ -2,7 +2,6 @@
 #define GAME_H
 #include <string>
 #include <SDL.h>
-#include <SDL_mixer.h>
 #include <SDL_image.h>
 #include <emscripten.h>
 #include <iostream>
@@ -51,6 +50,12 @@ void IncrementMidChallengeTextures(Texture *textureArray, int numTextures);
 CollisionMarker CheckChallengePolygonCollision(Texture *challengeArray, int numChallege, Triangle *triangleArray);
 
 void RenderTextureArray(SDL_Renderer *renderer, Texture *textureArray, int numTextures);
+
+AudioClip InitAudio(string filepath);
+
+void PlayAudio(SDL_AudioDeviceID audioDevice, AudioClip clip);
+
+
 
 #endif // GAME_H
  
