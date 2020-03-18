@@ -717,3 +717,35 @@ void PlayAudio(SDL_AudioDeviceID audioDevice, AudioClip clip)
     }
 
 }
+
+void RenderFont(SDL_Renderer *renderer, SDL_Texture *fontTexture, string text, int xVal, int yVal)
+{
+    SDL_Rect srcRect;
+    SDL_Rect dstRect;
+    int xTextPos = 0;
+    int yTextPos = 0;
+
+    dstRect.x = xVal;
+    dstRect.y = yVal;
+    dstRect.h = 10;
+    dstRect.w = 8;
+
+    for (unsigned int j = 0; j < text.size(); ++j)
+    {
+
+        char curChar = text[j];
+
+        if ((int)curChar >= 48 && (int)curChar <= 57)
+        {
+            xTextPos = ((int)curChar - 48) * 8;
+        }
+
+        srcRect.x = xTextPos;
+        srcRect.y = yTextPos;
+        srcRect.h = 10;
+        srcRect.w = 8;
+
+        SDL_RenderCopyEx(renderer, fontTexture, &srcRect, &dstRect, 0, NULL, SDL_FLIP_NONE);
+        dstRect.x += 8; 
+    }
+}

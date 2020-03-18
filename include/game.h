@@ -55,7 +55,6 @@ AudioClip InitAudio(string filepath);
 
 void PlayAudio(SDL_AudioDeviceID audioDevice, AudioClip clip);
 
-
-
+void RenderFont(SDL_Renderer *renderer, SDL_Texture *fontTexture, string text, int xVal, int yVal);
 #endif // GAME_H
  

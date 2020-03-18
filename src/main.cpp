@@ -17,7 +17,7 @@ SDL_Rect srcRect;
 SDL_Rect dstRect;
 
 //Texture declarations
-Texture NumberFont;
+SDL_Texture *fontTexture;
 
 Texture Title;
 Texture HeartGreen;
@@ -38,6 +38,8 @@ int rotation = 0;
 Uint32 gameStartTime = 0;
 Uint32 stateBeginTime;
 Uint32 nextStateTime;
+int gameTime;
+
 //Mood vars
 int greenTime;
 int redTime;
@@ -131,6 +133,8 @@ void gameloop()
                         cout << "In polygon\n";
                         if(GameState == "MENU")
                         {
+                            gameStartTime = SDL_GetTicks();
+                            frameStart = SDL_GetTicks();
                             GameState = "FADETITLE";
                             PlayAudio(audioDevice, ToddlerMus);
                         }
@@ -176,7 +180,10 @@ void gameloop()
                 break;
         }
     }
-
+    if(GameState == "MENU")
+    {
+        gameTime = 0;
+    }
     if(GameState == "FADETITLE")
     {
         if(Title.mAlpha > 0)
@@ -185,7 +192,6 @@ void gameloop()
         }
         else
         {
-            gameStartTime = SDL_GetTicks();
             GameState = "TODDLER";
             //Random seed whenever game starts
             srand(time(NULL));
@@ -573,17 +579,21 @@ void gameloop()
         //Render circle
         RenderTriangleArray(renderer, triangleArray, center);
     }
-    
-    NumberFont.mX = center.x;
-    NumberFont.mY = center.y;
+
 
     //Render Heart 
     RenderTexture(renderer, HeartGreen);
     RenderTexture(renderer, HeartRed);
     RenderTexture(renderer, Guidance);
     RenderTexture(renderer, GiveGuidance);
+    if(GameState != "MENU")
+    {
+        gameTime = (frameStart - gameStartTime) / 1000;
+    }
+    //cout << "GameTime: " << gameTime << "\n";
+    //RenderTexture(renderer, NumberFont);
 
-    RenderTexture(renderer, NumberFont);
+    RenderFont(renderer, fontTexture, to_string(gameTime), center.x, center.y);
     //Rototate the startval
     if(rotation > 0)
     {
@@ -631,9 +641,8 @@ int main(int argv, char **args)
     // 
     //Texture Inits
     //
-    SDL_Texture *fontTexture = GetSDLTexture(renderer, window, "./res/png/numbers.png");
+    fontTexture = GetSDLTexture(renderer, window, "./res/png/numbers.png");
     RemoveTextureWhiteSpace(fontTexture);
-    NumberFont = InitTexture(fontTexture, 20, 20); 
 
     SDL_Texture *titleTex = GetSDLTexture(renderer, window, "./res/png/title.png");
     RemoveTextureWhiteSpace(titleTex);
