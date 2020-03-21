@@ -40,6 +40,8 @@ Uint32 stateBeginTime;
 Uint32 nextStateTime;
 int gameTime;
 
+bool renderPolygon = true;
+bool naked = false;
 //Mood vars
 int greenTime;
 int redTime;
@@ -159,8 +161,32 @@ void gameloop()
                                 }
                             }
                         }
-                        cout << "radius: " << radius << "\n";
+                        else if(GameState == "RESTART")
+                        {
+                            GameState = "MENU";
+                            Title.mAlpha = 255;
+                            HeartRed.mAlpha = 0;
+                            HeartGreen.mAlpha = 255;
+                            screenColor.r = 191;
+                            screenColor.g = 232; 
+                            screenColor.b = 242;
+                            screenColor.a = 255;
+                            rotation = 0;
+                            gameStartTime = 0;
+                            renderPolygon = true;
+                            naked = false;
 
+                            Mood = "GREEN";
+                            center.x = 250;
+                            center.y = 250;
+
+                            direction.x = 0;
+                            direction.y = 1;
+                            radius = 50;
+                            movement = "TOP";
+                            InitTriangleArray(triangleArray, radius);
+
+                        }
                     }
 
                     if(GameState == "CHILDHOOD" || GameState == "TEEN")
@@ -251,9 +277,19 @@ void gameloop()
         {
             increment = false;
         }
+
+        CollisionMarker col;
+        col = CheckGuidancePolygonCollision(triangleArray, Guidance.mX ,Guidance.mY, Guidance.mW, &maxGuidance, increment);
+
         //Pass in guildance midpoint
-        if(CheckGuidancePolygonCollision(triangleArray, Guidance.mX ,Guidance.mY, Guidance.mW, &maxGuidance, increment))
+        if(col.colState == 1)
         {
+            if(!increment)
+            {
+                startCol = col.startPoint;
+                endCol = col.endPoint;
+                colLineAlpha = 255;
+            }
             Guidance.mY = GiveGuidance.mY;
             guidanceState = "MINE";
         }
@@ -293,11 +329,22 @@ void gameloop()
         {
             increment = false;
         }
+
+        CollisionMarker col;
+        col = CheckGuidancePolygonCollision(triangleArray, Guidance.mX ,Guidance.mY, Guidance.mW, &maxGuidance, increment);
+
         //Pass in guildance midpoint
-        if(CheckGuidancePolygonCollision(triangleArray, Guidance.mX ,Guidance.mY, Guidance.mW, &maxGuidance, increment))
+        if(col.colState == 1)
         {
+            if(!increment)
+            {
+                startCol = col.startPoint;
+                endCol = col.endPoint;
+                colLineAlpha = 255;
+            }
             Guidance.mY = GiveGuidance.mY;
             guidanceState = "MINE";
+
         }
 
         //Move the polygon from side to side
@@ -305,7 +352,7 @@ void gameloop()
         {
             if(center.x - (radius + maxGuidance) > moveLeftBound)
             {
-                center.x -= 1;
+                center.x -= 3;
             }
             else
             {
@@ -316,7 +363,7 @@ void gameloop()
         {
             if(center.x + (radius + maxGuidance) < moveRightBound)
             {
-                center.x += 1;
+                center.x += 3;
             }
             else
             {
@@ -355,13 +402,14 @@ void gameloop()
             }
             numMidChallenge = (rand() % 4) + (2 + addVal);
 
-            cout << "numMid: " << numMidChallenge << "\n";
             InitMidChallengeTexture(challengeTex, MidChallenge, numMidChallenge);
 
         }
     }
     if(GameState == "ADULT")
     {
+
+
         //Move towards top
         if(movement == "TOP")
         {
@@ -413,14 +461,22 @@ void gameloop()
                     endCol = col.endPoint;
                     colLineAlpha = 255;
 
+                    cout << "Rad: " << triangleArray[0].radius << "\n";
+                    if(naked)
+                    {
+                        cout << "is ended\n";
+                        movement = "END";
+                    }
+                    if(triangleArray[0].radius < 26)
+                    {
+                        cout << "naked\n";
+                        renderPolygon = false; 
+                        naked = true;
+                    }
                 }
                 else if(col.colState == 0)
                 {
                     center.x -= 1;
-                }
-                else if(col.colState == 2)
-                {
-                    movement = "END";
                 }
             }
             else
@@ -434,14 +490,23 @@ void gameloop()
 
                     colLineAlpha = 255;
 
+                    cout << "Rad: " << triangleArray[0].radius << "\n";
+                    if(naked)
+                    {
+                        cout << "is ended\n";
+                        movement = "END";
+                    }
+                    if(triangleArray[0].radius < 26)
+                    {
+                        cout << "naked\n";
+                        renderPolygon = false; 
+                        naked = true;
+                    }
+
                 }
                 else if(col.colState == 0) 
                 {
                     center.x += 1;
-                }
-                else if(col.colState == 2)
-                {
-                    movement = "END";
                 }
             }
 
@@ -459,11 +524,22 @@ void gameloop()
                 endCol = col.endPoint;
 
                 colLineAlpha = 255;
+                cout << "Rad: " << triangleArray[0].radius << "\n";
+                if(naked)
+                {
+                    cout << "is ended\n";
+                    movement = "END";
+                }
+                if(triangleArray[0].radius < 26)
+                {
+                    cout << "naked\n";
+                    renderPolygon = false; 
+                    naked = true;
+
+                    cout << "poly: " << renderPolygon << "\n";
+                }
             }
-            else if(col.colState == 2)
-            {
-                movement = "END";
-            }
+
 
 
         }
@@ -479,6 +555,7 @@ void gameloop()
             score = SDL_GetTicks() - gameStartTime;
             cout << "Score: " << score << "\n";
             movement = "RESTART";
+            GameState = "RESTART";
         }
 
 
@@ -539,29 +616,27 @@ void gameloop()
             }
         }
     }
-    if(GameState == "ADULT")
+    if(GameState == "ADULT" || GameState == "RESTART")
     {
         //Render challenges
         RenderTextureArray(renderer, LeftChallenge, 10); 
         RenderTextureArray(renderer, RightChallenge, 10); 
         RenderTextureArray(renderer, MidChallenge, numMidChallenge);
-
-        //Render col line
-
-        if(colLineAlpha > 0)
-        {
-            colLineAlpha -= 5;
-        }
-        else
-        {
-            colLineAlpha = 0;
-        }
-
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, colLineAlpha);
-
-        SDL_RenderDrawLine(renderer, startCol.x, startCol.y, endCol.x, endCol.y);
-
     }
+    //Render col line
+
+    if(colLineAlpha > 0)
+    {
+        colLineAlpha -= 5;
+    }
+    else
+    {
+        colLineAlpha = 0;
+    }
+
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, colLineAlpha);
+    SDL_RenderDrawLine(renderer, startCol.x, startCol.y, endCol.x, endCol.y);
+
 
     //Set heart in middle of polygon
     HeartGreen.mX = center.x - (HeartGreen.mW/2);
@@ -572,21 +647,23 @@ void gameloop()
 
     RenderTexture(renderer, Title);
 
-    if(movement != "END" && movement != "RESTART")
-    {
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-        //Render circle
-        RenderTriangleArray(renderer, triangleArray, center);
-    }
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
+    //Render polygon 
+    RenderTriangleArray(renderer, triangleArray, center, renderPolygon);
 
     //Render Heart 
     RenderTexture(renderer, HeartGreen);
     RenderTexture(renderer, HeartRed);
     RenderTexture(renderer, Guidance);
     RenderTexture(renderer, GiveGuidance);
-    if(GameState != "MENU")
+
+    if(GameState == "RESTART")
+    {
+        gameTime = score / 1000;
+    }
+    else if(GameState != "MENU")
     {
         gameTime = (frameStart - gameStartTime) / 1000;
     }

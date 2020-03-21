@@ -170,7 +170,7 @@ void RemoveTextureWhiteSpace(SDL_Texture *texture)
         //Map colors
 
         Uint32 colorKeyWhite = SDL_MapRGBA(mappingFormat, 0xFF, 0xFF, 0xFF, 0xFF);
-        Uint32 colorKeyGray = SDL_MapRGBA(mappingFormat, 195, 195, 195, 0xFF);
+        Uint32 colorKeyGray = SDL_MapRGBA(mappingFormat, 182, 182, 182, 0xFF);
 
         Uint32 transparent = SDL_MapRGBA(mappingFormat, 0xFF, 0xFF, 0xFF, 0);
 
@@ -324,7 +324,7 @@ void InitTriangleArray(Triangle *triangleArray, int radius)
 
 }
 
-void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Point center)
+void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Point center, bool render)
 {
     //Convert degrees to radians
     double rad = 45  * PI / (double)180.0;
@@ -362,25 +362,29 @@ void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Po
 
         secondPoint.x = center.x + (secondDirection.x * radius);
         secondPoint.y = center.y + (secondDirection.y * radius);
-
-        SDL_RenderDrawLine(renderer, firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y);
-
+        if(render)
+        {
+            SDL_RenderDrawLine(renderer, firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y);
+        }
         polygonTri.startPoint = firstPoint;
         polygonTri.endPoint = secondPoint;
 
         triangleArray[i] = polygonTri;
 
-        //Now render all the lines before in multiples of 4
-        for(int j = 0; j < polygonTri.numGuidance; j += 4)
+        if(render)
         {
-            radius -= 4;
-            firstPoint.x = center.x + (polygonTri.direction.x * radius);
-            firstPoint.y = center.y + (polygonTri.direction.y * radius);
+            //Now render all the lines before in multiples of 4
+            for(int j = 0; j < polygonTri.numGuidance; j += 4)
+            {
+                radius -= 4;
+                firstPoint.x = center.x + (polygonTri.direction.x * radius);
+                firstPoint.y = center.y + (polygonTri.direction.y * radius);
 
-            secondPoint.x = center.x + (secondDirection.x * radius);
-            secondPoint.y = center.y + (secondDirection.y * radius);
+                secondPoint.x = center.x + (secondDirection.x * radius);
+                secondPoint.y = center.y + (secondDirection.y * radius);
 
-            SDL_RenderDrawLine(renderer, firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y);
+                SDL_RenderDrawLine(renderer, firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y);
+            }
         }
     }
 
@@ -448,9 +452,12 @@ bool TextureMouseCollisionSingle(Texture mTexture, int xPos, int yPos)
     return false;
 }
 
-bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY, int guidanceW, int *maxGuidance, bool increment)
+CollisionMarker CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY, int guidanceW, int *maxGuidance, bool increment)
 {
     bool isCollided = false;
+
+    CollisionMarker col;
+    col.colState = 0;
 
     int iCollided = 0;
     int nearestY = 0;
@@ -469,6 +476,16 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
             rightX = polygonTri.startPoint.x;
         }
 
+        //find topmost point
+        int topY = polygonTri.startPoint.y;
+        int bottomY = polygonTri.endPoint.y;
+
+        if(polygonTri.endPoint.y < topY)
+        {
+            topY = polygonTri.endPoint.y;
+            bottomY = polygonTri.startPoint.y;
+        }
+
         if(polygonTri.numGuidance > maxGuide)
         {
             maxGuide = polygonTri.numGuidance;
@@ -478,7 +495,7 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
         if(rightX >= guidanceX && (guidanceX + guidanceW) >= leftX)
         {
             //check y collision
-            if(guidanceY < polygonTri.startPoint.y)
+            if(guidanceY <= bottomY && guidanceY >= topY)
             {
                 isCollided = true;
 
@@ -488,21 +505,17 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
                     iCollided = i;
                 }
             }
-            if(guidanceY < polygonTri.endPoint.y)
-            {
-                isCollided = true;
-
-                if(polygonTri.startPoint.y > nearestY)
-                {
-                    nearestY = polygonTri.startPoint.y;
-                    iCollided = i;
-                }
-            }
         }
     } 
 
     if(isCollided)
     {
+        col.colState = 1;
+        col.index = iCollided;
+        col.startPoint.x = triangleArray[iCollided].startPoint.x;
+        col.startPoint.y = triangleArray[iCollided].startPoint.y;
+        col.endPoint.x = triangleArray[iCollided].endPoint.x;
+        col.endPoint.y = triangleArray[iCollided].endPoint.y;
         if(increment)
         {
             if(triangleArray[iCollided].numGuidance + triangleArray[iCollided].radius < 150)
@@ -519,8 +532,7 @@ bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int g
         }
     }
     *maxGuidance = maxGuide;
-    return isCollided;
-
+    return col;
 }
 
 
@@ -661,20 +673,7 @@ CollisionMarker CheckChallengePolygonCollision(Texture *challengeArray, int numC
                 //decrement radius of all triangles
                 for(int t_i = 0; t_i < 8; t_i++)
                 {
-                    if(triangleArray[t_i].radius > 25)
-                    {
-                        if(triangleArray[t_i].radius - 4 < 24)
-                        {
-                            triangleArray[t_i].radius = 24;
-                        }
-                        triangleArray[t_i].radius -= 4;
-                    }
-                    else
-                    {
-                        cout << "RIP\n";
-                        col.colState = 2;
-                        return col;
-                    }
+                    triangleArray[t_i].radius -= 4;
                 }
             }
             col.index = gCollision;
@@ -725,8 +724,12 @@ void RenderFont(SDL_Renderer *renderer, SDL_Texture *fontTexture, string text, i
     int xTextPos = 0;
     int yTextPos = 0;
 
-    dstRect.x = xVal;
-    dstRect.y = yVal;
+    //Change start val base on size of text
+    int startX = xVal - ((text.size() * 8)/2);
+
+    dstRect.x = startX;
+    //-5 because that's half of height
+    dstRect.y = yVal-5;
     dstRect.h = 10;
     dstRect.w = 8;
 

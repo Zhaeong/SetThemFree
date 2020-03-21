@@ -27,7 +27,7 @@ void SetTextureColor(SDL_Texture *texture, int R, int G, int B, int A);
 
 void InitTriangleArray(Triangle *triangleArray, int radius);
 
-void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Point center);
+void RenderTriangleArray(SDL_Renderer *renderer, Triangle *triangleArray, SDL_Point center, bool render);
 
 void UpdateTriangleArrayRadius(Triangle *triangleArray, int value);
 
@@ -37,7 +37,7 @@ bool CheckPointInCircle(SDL_Point circleCenter, int radius, SDL_Point checkPoint
 
 bool TextureMouseCollisionSingle(Texture mTexture, int xPos, int yPos);
 
-bool CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY, int guidanceW, int *maxGuidance, bool increment);
+CollisionMarker CheckGuidancePolygonCollision(Triangle *triangleArray, int guidanceX, int guidanceY, int guidanceW, int *maxGuidance, bool increment);
 
 void InitChallengeTexture(SDL_Texture *challengeTex, Texture *textureArray, int numTextures, bool isLeft);
 
