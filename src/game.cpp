@@ -61,7 +61,7 @@ SDL_Texture *GetSDLTexture(SDL_Renderer *renderer, SDL_Window *window, string te
         //                                                          SDL_GetWindowPixelFormat( window ),
         //                                                          0 );
 
-        cout << "Loading Texture: " << textureLocation << "\n";
+        //cout << "Loading Texture: " << textureLocation << "\n";
         SDL_Surface *formattedSurface = SDL_ConvertSurfaceFormat(loadedSurface,
                 TEXTUREFORMAT,
                 0);

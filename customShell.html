@@ -5,10 +5,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Set Them Free</title>
     <style>
-      .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
+      .emscripten { margin-top: 5px; padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
       textarea.emscripten { font-family: monospace; width: 80%; }
       div.emscripten { text-align: center; }
-      div.emscripten_border { border: 1px solid black; }
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten { border: 0px none; background-color: black; }
 
@@ -47,26 +46,17 @@
     </style>
   </head>
   <body>
-    <hr/>
     <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><center style="margin-top:0.5em"><strong>emscripten</strong></center></figure>
     <div class="emscripten" id="status">Downloading...</div>
     <div class="emscripten">
       <progress value="0" max="100" id="progress" hidden=1></progress>  
     </div>
-    <div class="emscripten_border">
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
-    </div>
-    <hr/>
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
     <div class="emscripten">
-      <input type="checkbox" id="resize">Resize canvas
-      <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
-      &nbsp;&nbsp;&nbsp;
-      <input type="button" value="Fullscreen" onclick="setFullscreen()">
+        <input type="button" value="Large" onclick="setSize(800)">
+        <input type="button" value="Small" onclick="setSize(500)">
     </div>
     
-    <hr/>
-    <textarea class="emscripten" id="output" rows="8"></textarea>
-    <hr>
     <script type='text/javascript'>
       var statusElement = document.getElementById('status');
       var progressElement = document.getElementById('progress');
@@ -102,7 +92,11 @@
           // As a default initial behavior, pop up an alert when webgl context is lost. To make your
           // application robust, you may want to override this behavior before shipping!
           // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
-          canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+          canvas.addEventListener("webglcontextlost", function(e) { 
+                                        alert('WebGL context lost. You will need to reload the page.'); 
+                                        e.preventDefault(); 
+                                    }, 
+                                   false);
 
           return canvas;
         })(),
@@ -142,9 +136,9 @@
           if (text) Module.printErr('[post-exception status] ' + text);
         };
       };
-    function setFullscreen()
+    function setSize(inSize)
     {
-        console.log("aaaa");
+    /*
         document.getElementById("canvas").style.position="absolute";
         document.getElementById("canvas").style.top="0px";
         document.getElementById("canvas").style.left="0px";
@@ -153,6 +147,9 @@
         document.getElementById("canvas").style.height="100%";
         document.getElementById("canvas").style.overflow="hidden";
         document.getElementById("canvas").style.display="block";
+        */
+        document.getElementById("canvas").style.width= inSize + "px";
+        document.getElementById("canvas").style.height= inSize + "px";
     }
     </script>
     {{{ SCRIPT }}}

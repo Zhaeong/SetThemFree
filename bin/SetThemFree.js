@@ -215,7 +215,7 @@ Module.expectedDataFileDownloads++;
    "audio": 0
   } ],
   "remote_package_size": 65077006,
-  "package_uuid": "474c7166-9023-419e-a711-aef4d6c6576c"
+  "package_uuid": "5770330f-bd79-4e23-ba50-bef5819a0710"
  });
 })();
 
@@ -616,8 +616,8 @@ function setValue(ptr, value, type, noSafe) {
 var wasmMemory;
 
 var wasmTable = new WebAssembly.Table({
- "initial": 1022,
- "maximum": 1022 + 0,
+ "initial": 688,
+ "maximum": 688 + 0,
  "element": "anyfunc"
 });
 
@@ -800,11 +800,6 @@ function allocateUTF8OnStack(str) {
  return ret;
 }
 
-function writeArrayToMemory(array, buffer) {
- assert(array.length >= 0, "writeArrayToMemory array must have a length (should be an array or typed array)");
- HEAP8.set(array, buffer);
-}
-
 function writeAsciiToMemory(str, buffer, dontAddNull) {
  for (var i = 0; i < str.length; ++i) {
   assert(str.charCodeAt(i) === str.charCodeAt(i) & 255);
@@ -836,7 +831,7 @@ function updateGlobalBufferAndViews(buf) {
  Module["HEAPF64"] = HEAPF64 = new Float64Array(buf);
 }
 
-var STACK_BASE = 5347056, STACK_MAX = 104176, DYNAMIC_BASE = 5347056, DYNAMICTOP_PTR = 104016;
+var STACK_BASE = 5330592, STACK_MAX = 87712, DYNAMIC_BASE = 5330592, DYNAMICTOP_PTR = 87552;
 
 assert(STACK_BASE % 16 === 0, "stack must start aligned");
 
@@ -1201,7 +1196,7 @@ var tempDouble;
 var tempI64;
 
 var ASM_CONSTS = {
- 36916: function($0, $1, $2) {
+ 36788: function($0, $1, $2) {
   var w = $0;
   var h = $1;
   var pixels = $2;
@@ -1272,7 +1267,7 @@ var ASM_CONSTS = {
   SDL2.ctx.putImageData(SDL2.image, 0, 0);
   return 0;
  },
- 38371: function($0, $1, $2, $3, $4) {
+ 38243: function($0, $1, $2, $3, $4) {
   var w = $0;
   var h = $1;
   var hot_x = $2;
@@ -1309,30 +1304,30 @@ var ASM_CONSTS = {
   stringToUTF8(url, urlBuf, url.length + 1);
   return urlBuf;
  },
- 39360: function($0) {
+ 39232: function($0) {
   if (Module["canvas"]) {
    Module["canvas"].style["cursor"] = UTF8ToString($0);
   }
   return 0;
  },
- 39453: function() {
+ 39325: function() {
   if (Module["canvas"]) {
    Module["canvas"].style["cursor"] = "none";
   }
  },
- 40678: function() {
+ 40550: function() {
   return screen.width;
  },
- 40705: function() {
+ 40577: function() {
   return screen.height;
  },
- 40778: function($0) {
+ 40650: function($0) {
   if (typeof Module["setWindowTitle"] !== "undefined") {
    Module["setWindowTitle"](UTF8ToString($0));
   }
   return 0;
  },
- 40932: function() {
+ 40804: function() {
   if (typeof AudioContext !== "undefined") {
    return 1;
   } else if (typeof webkitAudioContext !== "undefined") {
@@ -1340,7 +1335,7 @@ var ASM_CONSTS = {
   }
   return 0;
  },
- 41098: function() {
+ 40970: function() {
   if (typeof navigator.mediaDevices !== "undefined" && typeof navigator.mediaDevices.getUserMedia !== "undefined") {
    return 1;
   } else if (typeof navigator.webkitGetUserMedia !== "undefined") {
@@ -1348,7 +1343,7 @@ var ASM_CONSTS = {
   }
   return 0;
  },
- 41324: function($0) {
+ 41196: function($0) {
   if (typeof Module["SDL2"] === "undefined") {
    Module["SDL2"] = {};
   }
@@ -1367,11 +1362,11 @@ var ASM_CONSTS = {
   }
   return SDL2.audioContext === undefined ? -1 : 0;
  },
- 41807: function() {
+ 41679: function() {
   var SDL2 = Module["SDL2"];
   return SDL2.audioContext.sampleRate;
  },
- 41877: function($0, $1, $2, $3) {
+ 41749: function($0, $1, $2, $3) {
   var SDL2 = Module["SDL2"];
   var have_microphone = function(stream) {
    if (SDL2.capture.silenceTimer !== undefined) {
@@ -1412,7 +1407,7 @@ var ASM_CONSTS = {
    }, have_microphone, no_microphone);
   }
  },
- 43529: function($0, $1, $2, $3) {
+ 43401: function($0, $1, $2, $3) {
   var SDL2 = Module["SDL2"];
   SDL2.audio.scriptProcessorNode = SDL2.audioContext["createScriptProcessor"]($1, 0, $0);
   SDL2.audio.scriptProcessorNode["onaudioprocess"] = function(e) {
@@ -1424,7 +1419,7 @@ var ASM_CONSTS = {
   };
   SDL2.audio.scriptProcessorNode["connect"](SDL2.audioContext["destination"]);
  },
- 43939: function($0, $1) {
+ 43811: function($0, $1) {
   var SDL2 = Module["SDL2"];
   var numChannels = SDL2.capture.currentCaptureBuffer.numberOfChannels;
   for (var c = 0; c < numChannels; ++c) {
@@ -1443,7 +1438,7 @@ var ASM_CONSTS = {
    }
   }
  },
- 44544: function($0, $1) {
+ 44416: function($0, $1) {
   var SDL2 = Module["SDL2"];
   var numChannels = SDL2.audio.currentOutputBuffer["numberOfChannels"];
   for (var c = 0; c < numChannels; ++c) {
@@ -1456,7 +1451,7 @@ var ASM_CONSTS = {
    }
   }
  },
- 45024: function($0) {
+ 44896: function($0) {
   var SDL2 = Module["SDL2"];
   if ($0) {
    if (SDL2.capture.silenceTimer !== undefined) {
@@ -1550,11 +1545,6 @@ function ___lock() {}
 function ___setErrNo(value) {
  if (Module["___errno_location"]) HEAP32[Module["___errno_location"]() >> 2] = value; else err("failed to set errno from JS");
  return value;
-}
-
-function ___map_file(pathname, size) {
- ___setErrNo(63);
- return -1;
 }
 
 var PATH = {
@@ -4437,35 +4427,6 @@ function ___syscall54(which, varargs) {
   default:
    abort("bad ioctl syscall " + op);
   }
- } catch (e) {
-  if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) abort(e);
-  return -e.errno;
- }
-}
-
-function __emscripten_syscall_munmap(addr, len) {
- if (addr === -1 || len === 0) {
-  return -28;
- }
- var info = SYSCALLS.mappings[addr];
- if (!info) return 0;
- if (len === info.len) {
-  var stream = FS.getStream(info.fd);
-  SYSCALLS.doMsync(addr, stream, len, info.flags, info.offset);
-  FS.munmap(stream);
-  SYSCALLS.mappings[addr] = null;
-  if (info.allocated) {
-   _free(info.malloc);
-  }
- }
- return 0;
-}
-
-function ___syscall91(which, varargs) {
- SYSCALLS.varargs = varargs;
- try {
-  var addr = SYSCALLS.get(), len = SYSCALLS.get();
-  return __emscripten_syscall_munmap(addr, len);
  } catch (e) {
   if (typeof FS === "undefined" || !(e instanceof FS.ErrnoError)) abort(e);
   return -e.errno;
@@ -8469,305 +8430,6 @@ function _signal(sig, func) {
  return 0;
 }
 
-function __isLeapYear(year) {
- return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-}
-
-function __arraySum(array, index) {
- var sum = 0;
- for (var i = 0; i <= index; sum += array[i++]) ;
- return sum;
-}
-
-var __MONTH_DAYS_LEAP = [ 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
-
-var __MONTH_DAYS_REGULAR = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
-
-function __addDays(date, days) {
- var newDate = new Date(date.getTime());
- while (days > 0) {
-  var leap = __isLeapYear(newDate.getFullYear());
-  var currentMonth = newDate.getMonth();
-  var daysInCurrentMonth = (leap ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR)[currentMonth];
-  if (days > daysInCurrentMonth - newDate.getDate()) {
-   days -= daysInCurrentMonth - newDate.getDate() + 1;
-   newDate.setDate(1);
-   if (currentMonth < 11) {
-    newDate.setMonth(currentMonth + 1);
-   } else {
-    newDate.setMonth(0);
-    newDate.setFullYear(newDate.getFullYear() + 1);
-   }
-  } else {
-   newDate.setDate(newDate.getDate() + days);
-   return newDate;
-  }
- }
- return newDate;
-}
-
-function _strftime(s, maxsize, format, tm) {
- var tm_zone = HEAP32[tm + 40 >> 2];
- var date = {
-  tm_sec: HEAP32[tm >> 2],
-  tm_min: HEAP32[tm + 4 >> 2],
-  tm_hour: HEAP32[tm + 8 >> 2],
-  tm_mday: HEAP32[tm + 12 >> 2],
-  tm_mon: HEAP32[tm + 16 >> 2],
-  tm_year: HEAP32[tm + 20 >> 2],
-  tm_wday: HEAP32[tm + 24 >> 2],
-  tm_yday: HEAP32[tm + 28 >> 2],
-  tm_isdst: HEAP32[tm + 32 >> 2],
-  tm_gmtoff: HEAP32[tm + 36 >> 2],
-  tm_zone: tm_zone ? UTF8ToString(tm_zone) : ""
- };
- var pattern = UTF8ToString(format);
- var EXPANSION_RULES_1 = {
-  "%c": "%a %b %d %H:%M:%S %Y",
-  "%D": "%m/%d/%y",
-  "%F": "%Y-%m-%d",
-  "%h": "%b",
-  "%r": "%I:%M:%S %p",
-  "%R": "%H:%M",
-  "%T": "%H:%M:%S",
-  "%x": "%m/%d/%y",
-  "%X": "%H:%M:%S",
-  "%Ec": "%c",
-  "%EC": "%C",
-  "%Ex": "%m/%d/%y",
-  "%EX": "%H:%M:%S",
-  "%Ey": "%y",
-  "%EY": "%Y",
-  "%Od": "%d",
-  "%Oe": "%e",
-  "%OH": "%H",
-  "%OI": "%I",
-  "%Om": "%m",
-  "%OM": "%M",
-  "%OS": "%S",
-  "%Ou": "%u",
-  "%OU": "%U",
-  "%OV": "%V",
-  "%Ow": "%w",
-  "%OW": "%W",
-  "%Oy": "%y"
- };
- for (var rule in EXPANSION_RULES_1) {
-  pattern = pattern.replace(new RegExp(rule, "g"), EXPANSION_RULES_1[rule]);
- }
- var WEEKDAYS = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ];
- var MONTHS = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
- function leadingSomething(value, digits, character) {
-  var str = typeof value === "number" ? value.toString() : value || "";
-  while (str.length < digits) {
-   str = character[0] + str;
-  }
-  return str;
- }
- function leadingNulls(value, digits) {
-  return leadingSomething(value, digits, "0");
- }
- function compareByDay(date1, date2) {
-  function sgn(value) {
-   return value < 0 ? -1 : value > 0 ? 1 : 0;
-  }
-  var compare;
-  if ((compare = sgn(date1.getFullYear() - date2.getFullYear())) === 0) {
-   if ((compare = sgn(date1.getMonth() - date2.getMonth())) === 0) {
-    compare = sgn(date1.getDate() - date2.getDate());
-   }
-  }
-  return compare;
- }
- function getFirstWeekStartDate(janFourth) {
-  switch (janFourth.getDay()) {
-  case 0:
-   return new Date(janFourth.getFullYear() - 1, 11, 29);
-
-  case 1:
-   return janFourth;
-
-  case 2:
-   return new Date(janFourth.getFullYear(), 0, 3);
-
-  case 3:
-   return new Date(janFourth.getFullYear(), 0, 2);
-
-  case 4:
-   return new Date(janFourth.getFullYear(), 0, 1);
-
-  case 5:
-   return new Date(janFourth.getFullYear() - 1, 11, 31);
-
-  case 6:
-   return new Date(janFourth.getFullYear() - 1, 11, 30);
-  }
- }
- function getWeekBasedYear(date) {
-  var thisDate = __addDays(new Date(date.tm_year + 1900, 0, 1), date.tm_yday);
-  var janFourthThisYear = new Date(thisDate.getFullYear(), 0, 4);
-  var janFourthNextYear = new Date(thisDate.getFullYear() + 1, 0, 4);
-  var firstWeekStartThisYear = getFirstWeekStartDate(janFourthThisYear);
-  var firstWeekStartNextYear = getFirstWeekStartDate(janFourthNextYear);
-  if (compareByDay(firstWeekStartThisYear, thisDate) <= 0) {
-   if (compareByDay(firstWeekStartNextYear, thisDate) <= 0) {
-    return thisDate.getFullYear() + 1;
-   } else {
-    return thisDate.getFullYear();
-   }
-  } else {
-   return thisDate.getFullYear() - 1;
-  }
- }
- var EXPANSION_RULES_2 = {
-  "%a": function(date) {
-   return WEEKDAYS[date.tm_wday].substring(0, 3);
-  },
-  "%A": function(date) {
-   return WEEKDAYS[date.tm_wday];
-  },
-  "%b": function(date) {
-   return MONTHS[date.tm_mon].substring(0, 3);
-  },
-  "%B": function(date) {
-   return MONTHS[date.tm_mon];
-  },
-  "%C": function(date) {
-   var year = date.tm_year + 1900;
-   return leadingNulls(year / 100 | 0, 2);
-  },
-  "%d": function(date) {
-   return leadingNulls(date.tm_mday, 2);
-  },
-  "%e": function(date) {
-   return leadingSomething(date.tm_mday, 2, " ");
-  },
-  "%g": function(date) {
-   return getWeekBasedYear(date).toString().substring(2);
-  },
-  "%G": function(date) {
-   return getWeekBasedYear(date);
-  },
-  "%H": function(date) {
-   return leadingNulls(date.tm_hour, 2);
-  },
-  "%I": function(date) {
-   var twelveHour = date.tm_hour;
-   if (twelveHour == 0) twelveHour = 12; else if (twelveHour > 12) twelveHour -= 12;
-   return leadingNulls(twelveHour, 2);
-  },
-  "%j": function(date) {
-   return leadingNulls(date.tm_mday + __arraySum(__isLeapYear(date.tm_year + 1900) ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR, date.tm_mon - 1), 3);
-  },
-  "%m": function(date) {
-   return leadingNulls(date.tm_mon + 1, 2);
-  },
-  "%M": function(date) {
-   return leadingNulls(date.tm_min, 2);
-  },
-  "%n": function() {
-   return "\n";
-  },
-  "%p": function(date) {
-   if (date.tm_hour >= 0 && date.tm_hour < 12) {
-    return "AM";
-   } else {
-    return "PM";
-   }
-  },
-  "%S": function(date) {
-   return leadingNulls(date.tm_sec, 2);
-  },
-  "%t": function() {
-   return "\t";
-  },
-  "%u": function(date) {
-   return date.tm_wday || 7;
-  },
-  "%U": function(date) {
-   var janFirst = new Date(date.tm_year + 1900, 0, 1);
-   var firstSunday = janFirst.getDay() === 0 ? janFirst : __addDays(janFirst, 7 - janFirst.getDay());
-   var endDate = new Date(date.tm_year + 1900, date.tm_mon, date.tm_mday);
-   if (compareByDay(firstSunday, endDate) < 0) {
-    var februaryFirstUntilEndMonth = __arraySum(__isLeapYear(endDate.getFullYear()) ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR, endDate.getMonth() - 1) - 31;
-    var firstSundayUntilEndJanuary = 31 - firstSunday.getDate();
-    var days = firstSundayUntilEndJanuary + februaryFirstUntilEndMonth + endDate.getDate();
-    return leadingNulls(Math.ceil(days / 7), 2);
-   }
-   return compareByDay(firstSunday, janFirst) === 0 ? "01" : "00";
-  },
-  "%V": function(date) {
-   var janFourthThisYear = new Date(date.tm_year + 1900, 0, 4);
-   var janFourthNextYear = new Date(date.tm_year + 1901, 0, 4);
-   var firstWeekStartThisYear = getFirstWeekStartDate(janFourthThisYear);
-   var firstWeekStartNextYear = getFirstWeekStartDate(janFourthNextYear);
-   var endDate = __addDays(new Date(date.tm_year + 1900, 0, 1), date.tm_yday);
-   if (compareByDay(endDate, firstWeekStartThisYear) < 0) {
-    return "53";
-   }
-   if (compareByDay(firstWeekStartNextYear, endDate) <= 0) {
-    return "01";
-   }
-   var daysDifference;
-   if (firstWeekStartThisYear.getFullYear() < date.tm_year + 1900) {
-    daysDifference = date.tm_yday + 32 - firstWeekStartThisYear.getDate();
-   } else {
-    daysDifference = date.tm_yday + 1 - firstWeekStartThisYear.getDate();
-   }
-   return leadingNulls(Math.ceil(daysDifference / 7), 2);
-  },
-  "%w": function(date) {
-   return date.tm_wday;
-  },
-  "%W": function(date) {
-   var janFirst = new Date(date.tm_year, 0, 1);
-   var firstMonday = janFirst.getDay() === 1 ? janFirst : __addDays(janFirst, janFirst.getDay() === 0 ? 1 : 7 - janFirst.getDay() + 1);
-   var endDate = new Date(date.tm_year + 1900, date.tm_mon, date.tm_mday);
-   if (compareByDay(firstMonday, endDate) < 0) {
-    var februaryFirstUntilEndMonth = __arraySum(__isLeapYear(endDate.getFullYear()) ? __MONTH_DAYS_LEAP : __MONTH_DAYS_REGULAR, endDate.getMonth() - 1) - 31;
-    var firstMondayUntilEndJanuary = 31 - firstMonday.getDate();
-    var days = firstMondayUntilEndJanuary + februaryFirstUntilEndMonth + endDate.getDate();
-    return leadingNulls(Math.ceil(days / 7), 2);
-   }
-   return compareByDay(firstMonday, janFirst) === 0 ? "01" : "00";
-  },
-  "%y": function(date) {
-   return (date.tm_year + 1900).toString().substring(2);
-  },
-  "%Y": function(date) {
-   return date.tm_year + 1900;
-  },
-  "%z": function(date) {
-   var off = date.tm_gmtoff;
-   var ahead = off >= 0;
-   off = Math.abs(off) / 60;
-   off = off / 60 * 100 + off % 60;
-   return (ahead ? "+" : "-") + String("0000" + off).slice(-4);
-  },
-  "%Z": function(date) {
-   return date.tm_zone;
-  },
-  "%%": function() {
-   return "%";
-  }
- };
- for (var rule in EXPANSION_RULES_2) {
-  if (pattern.indexOf(rule) >= 0) {
-   pattern = pattern.replace(new RegExp(rule, "g"), EXPANSION_RULES_2[rule](date));
-  }
- }
- var bytes = intArrayFromString(pattern, false);
- if (bytes.length > maxsize) {
-  return 0;
- }
- writeArrayToMemory(bytes, s);
- return bytes.length - 1;
-}
-
-function _strftime_l(s, maxsize, format, tm) {
- return _strftime(s, maxsize, format, tm);
-}
-
 function _time(ptr) {
  var ret = Date.now() / 1e3 | 0;
  if (ptr) {
@@ -8875,11 +8537,9 @@ function intArrayFromString(stringy, dontAddNull, length) {
 var asmLibraryArg = {
  "__handle_stack_overflow": ___handle_stack_overflow,
  "__lock": ___lock,
- "__map_file": ___map_file,
  "__syscall221": ___syscall221,
  "__syscall5": ___syscall5,
  "__syscall54": ___syscall54,
- "__syscall91": ___syscall91,
  "__unlock": ___unlock,
  "abort": _abort,
  "clock_gettime": _clock_gettime,
@@ -9131,7 +8791,6 @@ var asmLibraryArg = {
  "setTempRet0": _setTempRet0,
  "sigaction": _sigaction,
  "signal": _signal,
- "strftime_l": _strftime_l,
  "table": wasmTable,
  "testSetjmp": _testSetjmp,
  "time": _time
@@ -9345,48 +9004,6 @@ var dynCall_iidiiii = Module["dynCall_iidiiii"] = function() {
  return Module["asm"]["dynCall_iidiiii"].apply(null, arguments);
 };
 
-var dynCall_viijii = Module["dynCall_viijii"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_viijii"].apply(null, arguments);
-};
-
-var dynCall_iiiiiii = Module["dynCall_iiiiiii"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_iiiiiii"].apply(null, arguments);
-};
-
-var dynCall_iiiiij = Module["dynCall_iiiiij"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_iiiiij"].apply(null, arguments);
-};
-
-var dynCall_iiiiid = Module["dynCall_iiiiid"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_iiiiid"].apply(null, arguments);
-};
-
-var dynCall_iiiiijj = Module["dynCall_iiiiijj"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_iiiiijj"].apply(null, arguments);
-};
-
-var dynCall_iiiiiijj = Module["dynCall_iiiiiijj"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_iiiiiijj"].apply(null, arguments);
-};
-
-var dynCall_viiiiii = Module["dynCall_viiiiii"] = function() {
- assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
- assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
- return Module["asm"]["dynCall_viiiiii"].apply(null, arguments);
-};
-
 var dynCall_viiiii = Module["dynCall_viiiii"] = function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
@@ -9457,6 +9074,12 @@ var dynCall_viffff = Module["dynCall_viffff"] = function() {
  assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
  assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
  return Module["asm"]["dynCall_viffff"].apply(null, arguments);
+};
+
+var dynCall_viiiiii = Module["dynCall_viiiiii"] = function() {
+ assert(runtimeInitialized, "you need to wait for the runtime to be ready (e.g. wait for main() to be called)");
+ assert(!runtimeExited, "the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)");
+ return Module["asm"]["dynCall_viiiiii"].apply(null, arguments);
 };
 
 function invoke_ii(index, a1) {

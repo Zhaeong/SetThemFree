@@ -7,7 +7,7 @@ http.createServer(function (request, response) {
 
     var filePath = './bin' + request.url;
     if (filePath == './bin/') {
-        filePath = './bin/SetThemFree.html';
+        filePath = './bin/index.html';
     }
 
     var extname = String(path.extname(filePath)).toLowerCase();

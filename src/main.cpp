@@ -54,11 +54,11 @@ int childTime = 28;
 int teenTime = 21;
 int adultTime = 25;
 
-
-//int childTime = 2;
-//int teenTime = 2;
-//int adultTime = 2;
-
+/*
+   int childTime = 2;
+   int teenTime = 2;
+   int adultTime = 2;
+ */
 
 //Childhood vars
 string guidanceState = "MINE";
@@ -118,21 +118,20 @@ void gameloop()
             case SDL_KEYDOWN:
                 break;
             case SDL_KEYUP:
-                cout << "pressed\n"; 
+                //cout << "pressed\n"; 
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                cout << "MOUSE_DOWN \n";
+                //cout << "MOUSE_DOWN \n";
                 break;
             case SDL_MOUSEBUTTONUP:
                 {
-                    cout <<  "MOUSE_UP\n";
+                    //cout <<  "MOUSE_UP\n";
                     //rotation+=1;
                     SDL_GetMouseState(&xMouse, &yMouse);
 
                     SDL_Point mousePoint = {xMouse, yMouse};
                     if(CheckPointInCircle(center, radius, mousePoint))
                     {
-                        cout << "In polygon\n";
                         if(GameState == "MENU")
                         {
                             gameStartTime = SDL_GetTicks();
@@ -161,32 +160,7 @@ void gameloop()
                                 }
                             }
                         }
-                        else if(GameState == "RESTART")
-                        {
-                            GameState = "MENU";
-                            Title.mAlpha = 255;
-                            HeartRed.mAlpha = 0;
-                            HeartGreen.mAlpha = 255;
-                            screenColor.r = 191;
-                            screenColor.g = 232; 
-                            screenColor.b = 242;
-                            screenColor.a = 255;
-                            rotation = 0;
-                            gameStartTime = 0;
-                            renderPolygon = true;
-                            naked = false;
 
-                            Mood = "GREEN";
-                            center.x = 250;
-                            center.y = 250;
-
-                            direction.x = 0;
-                            direction.y = 1;
-                            radius = 50;
-                            movement = "TOP";
-                            InitTriangleArray(triangleArray, radius);
-
-                        }
                     }
 
                     if(GameState == "CHILDHOOD" || GameState == "TEEN")
@@ -198,6 +172,33 @@ void gameloop()
                                 guidanceState = "GIVING";
                             }
                         }
+                    }
+
+                    if(GameState == "RESTART")
+                    {
+                        GameState = "MENU";
+                        Title.mAlpha = 255;
+                        HeartRed.mAlpha = 0;
+                        HeartGreen.mAlpha = 255;
+                        screenColor.r = 191;
+                        screenColor.g = 232; 
+                        screenColor.b = 242;
+                        screenColor.a = 255;
+                        rotation = 0;
+                        gameStartTime = 0;
+                        renderPolygon = true;
+                        naked = false;
+
+                        Mood = "GREEN";
+                        center.x = 250;
+                        center.y = 250;
+
+                        direction.x = 0;
+                        direction.y = 1;
+                        radius = 50;
+                        movement = "TOP";
+                        InitTriangleArray(triangleArray, radius);
+
                     }
                     break;
                 }
@@ -352,7 +353,7 @@ void gameloop()
         {
             if(center.x - (radius + maxGuidance) > moveLeftBound)
             {
-                center.x -= 3;
+                center.x -= 1;
             }
             else
             {
@@ -363,7 +364,7 @@ void gameloop()
         {
             if(center.x + (radius + maxGuidance) < moveRightBound)
             {
-                center.x += 3;
+                center.x += 1;
             }
             else
             {
@@ -383,7 +384,7 @@ void gameloop()
             GiveGuidance.mAlpha = 0;
 
             topPoint.x = GAMEWIDTH/2;
-            topPoint.y = GAMEHEIGHT/2 - 80;
+            topPoint.y = GAMEHEIGHT/2 - 180;
 
             botPoint.x = GAMEWIDTH/2;
             botPoint.y = GAMEHEIGHT/2 + 80;
@@ -461,22 +462,21 @@ void gameloop()
                     endCol = col.endPoint;
                     colLineAlpha = 255;
 
-                    cout << "Rad: " << triangleArray[0].radius << "\n";
+                    //cout << "Rad: " << triangleArray[0].radius << "\n";
                     if(naked)
                     {
-                        cout << "is ended\n";
+                        //cout << "is ended\n";
                         movement = "END";
                     }
                     if(triangleArray[0].radius < 26)
                     {
-                        cout << "naked\n";
                         renderPolygon = false; 
                         naked = true;
                     }
                 }
                 else if(col.colState == 0)
                 {
-                    center.x -= 1;
+                    center.x -= 2;
                 }
             }
             else
@@ -490,15 +490,12 @@ void gameloop()
 
                     colLineAlpha = 255;
 
-                    cout << "Rad: " << triangleArray[0].radius << "\n";
                     if(naked)
                     {
-                        cout << "is ended\n";
                         movement = "END";
                     }
                     if(triangleArray[0].radius < 26)
                     {
-                        cout << "naked\n";
                         renderPolygon = false; 
                         naked = true;
                     }
@@ -506,7 +503,7 @@ void gameloop()
                 }
                 else if(col.colState == 0) 
                 {
-                    center.x += 1;
+                    center.x += 2;
                 }
             }
 
@@ -524,19 +521,14 @@ void gameloop()
                 endCol = col.endPoint;
 
                 colLineAlpha = 255;
-                cout << "Rad: " << triangleArray[0].radius << "\n";
                 if(naked)
                 {
-                    cout << "is ended\n";
                     movement = "END";
                 }
                 if(triangleArray[0].radius < 26)
                 {
-                    cout << "naked\n";
                     renderPolygon = false; 
                     naked = true;
-
-                    cout << "poly: " << renderPolygon << "\n";
                 }
             }
 
@@ -553,7 +545,6 @@ void gameloop()
         {
             SDL_ClearQueuedAudio(audioDevice);
             score = SDL_GetTicks() - gameStartTime;
-            cout << "Score: " << score << "\n";
             movement = "RESTART";
             GameState = "RESTART";
         }
@@ -597,7 +588,6 @@ void gameloop()
                 else
                 {
                     Mood = "RED";
-                    //cout << "Change to: " << Mood << "\n";
                 }
             }
             if(nextMood == "GREEN")
@@ -610,8 +600,6 @@ void gameloop()
                 else
                 {
                     Mood = "GREEN";
-                    //cout << "Change to: " << Mood << "\n";
-
                 }
             }
         }
@@ -704,7 +692,7 @@ void gameloop()
 //which is no longer subject to compiler interpretation
 int main(int argv, char **args)
 {
-    cout << "Starting Game\n";
+    //cout << "Starting Game\n";
 
     //Initiate SDL
     StartSDL(&window, &renderer);
