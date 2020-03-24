@@ -55,9 +55,9 @@ int teenTime = 21;
 int adultTime = 25;
 
 /*
-   int childTime = 2;
-   int teenTime = 2;
-   int adultTime = 2;
+    int childTime = 60;
+    int teenTime = 2;
+    int adultTime = 2;
  */
 
 //Childhood vars
@@ -238,6 +238,9 @@ void gameloop()
     }
     else if(GameState == "TODDLER")
     {
+        
+
+        
         if(frameStart > nextStateTime)
         {
             GameState = "CHILDHOOD";
@@ -256,6 +259,7 @@ void gameloop()
     }
     else if(GameState == "CHILDHOOD")
     {
+
         if(GiveGuidance.mAlpha + 5 < 255)
         {
             GiveGuidance.mAlpha += 5;
@@ -409,7 +413,11 @@ void gameloop()
     }
     if(GameState == "ADULT")
     {
-
+        //Looping of adult music
+        if(SDL_GetQueuedAudioSize(audioDevice) == 0)
+        {
+            PlayAudio(audioDevice, AdultMus);
+        }
 
         //Move towards top
         if(movement == "TOP")

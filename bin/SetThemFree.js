@@ -156,66 +156,66 @@ Module.expectedDataFileDownloads++;
   "files": [ {
    "filename": "/res/music/adult.wav",
    "start": 0,
-   "end": 51998504,
+   "end": 12688712,
    "audio": 1
   }, {
    "filename": "/res/music/child.wav",
-   "start": 51998504,
-   "end": 55719528,
+   "start": 12688712,
+   "end": 16409736,
    "audio": 1
   }, {
    "filename": "/res/music/teen.wav",
-   "start": 55719528,
-   "end": 60111920,
+   "start": 16409736,
+   "end": 20802128,
    "audio": 1
   }, {
    "filename": "/res/music/toddler.wav",
-   "start": 60111920,
-   "end": 65069156,
+   "start": 20802128,
+   "end": 25759364,
    "audio": 1
   }, {
    "filename": "/res/png/challenge.png",
-   "start": 65069156,
-   "end": 65069352,
+   "start": 25759364,
+   "end": 25759560,
    "audio": 0
   }, {
    "filename": "/res/png/giveGuidance.png",
-   "start": 65069352,
-   "end": 65069592,
+   "start": 25759560,
+   "end": 25759800,
    "audio": 0
   }, {
    "filename": "/res/png/guidance.png",
-   "start": 65069592,
-   "end": 65069784,
+   "start": 25759800,
+   "end": 25759992,
    "audio": 0
   }, {
    "filename": "/res/png/heartGreen.png",
-   "start": 65069784,
-   "end": 65070184,
+   "start": 25759992,
+   "end": 25760392,
    "audio": 0
   }, {
    "filename": "/res/png/heartRed.png",
-   "start": 65070184,
-   "end": 65070597,
+   "start": 25760392,
+   "end": 25760805,
    "audio": 0
   }, {
    "filename": "/res/png/numbers.png",
-   "start": 65070597,
-   "end": 65072089,
+   "start": 25760805,
+   "end": 25762297,
    "audio": 0
   }, {
    "filename": "/res/png/title.png",
-   "start": 65072089,
-   "end": 65074848,
+   "start": 25762297,
+   "end": 25765056,
    "audio": 0
   }, {
    "filename": "/res/png/titleProto.png",
-   "start": 65074848,
-   "end": 65077006,
+   "start": 25765056,
+   "end": 25767214,
    "audio": 0
   } ],
-  "remote_package_size": 65077006,
-  "package_uuid": "5770330f-bd79-4e23-ba50-bef5819a0710"
+  "remote_package_size": 25767214,
+  "package_uuid": "9be5002d-c537-47d2-ac4c-bcbd3e61da67"
  });
 })();
 
